@@ -105,7 +105,7 @@ function AccountSwitcher({ currentUser }) {
   const [createError, setCreateError] = useState("")
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/users", {
+    fetch("https://tmbeauty-hub-production.up.railway.app/api/admin/users", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(r => r.json())
@@ -116,7 +116,7 @@ function AccountSwitcher({ currentUser }) {
   async function switchTo(user) {
     setSwitching(user.id)
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/impersonate/${user.id}`, {
+      const res = await fetch(`https://tmbeauty-hub-production.up.railway.app/api/admin/impersonate/${user.id}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
       })
@@ -139,7 +139,7 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setCreateError("Please ent
 if (form.password && form.password.length < 8) { setCreateError("Password must be at least 8 characters"); setCreating(false); return }
     setCreateError("")
     try {
-      const res = await fetch("http://localhost:5000/api/admin/users", {
+      const res = await fetch("https://tmbeauty-hub-production.up.railway.app/api/admin/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
