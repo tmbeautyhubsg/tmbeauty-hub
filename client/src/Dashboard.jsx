@@ -38,7 +38,7 @@ function NavItem({ label, active, onClick }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        padding: "16px 24px",
+        padding: "11px 24px",
         cursor: "pointer",
         color: on ? GOLD : BLACK,
         fontFamily: "'Playfair Display', serif",
@@ -47,7 +47,7 @@ function NavItem({ label, active, onClick }) {
         background: on ? "#FDF6E3" : "transparent",
         fontWeight: on ? "700" : "400",
         transition: "all 0.15s",
-        minHeight: "52px",
+        minHeight: "40px",
         display: "flex",
         alignItems: "center",
       }}
