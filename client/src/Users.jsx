@@ -51,7 +51,6 @@ function statusColour(s) {
   if (s === "ghost") return { bg: "#EDE9FE", color: "#5B21B6" }
   return { bg: "#E5E7EB", color: "#374151" }
 }
-function boolDisplay(v) { return v === true || v === "true" ? "Yes" : "No" }
 function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) }
 
 function Badge({ label, bg, color }) {
@@ -631,7 +630,7 @@ export default function Users() {
             <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
               <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
             </FormField>
-            <FormField label="TSSB Credits" note="Enter TSSB credit balance from manual records">
+            <FormField label="TSSB Credits">
               <input type="number" value={cf.tssb_credits} onChange={e => setCf({...cf, tssb_credits: e.target.value})} placeholder="e.g. 0" style={iStyle} />
             </FormField>
           </div>

@@ -219,7 +219,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "4px" }}>Edit Package</div>
             <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{editingTier.chineseName} · {editingTier.englishName}</div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px", alignItems: "start" }}>
               <div>
                 <label style={lStyle}>Chinese Name</label>
                 <input value={editForm.chinese_name || ""} onChange={e => setEditForm({...editForm, chinese_name: e.target.value})} style={iStyle} />
