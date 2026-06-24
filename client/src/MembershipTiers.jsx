@@ -126,7 +126,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {tiers.map(tier => (
           <div key={tier.id} className="tier-row" style={{ background: cardBg, border: `0.5px solid ${lightGold}`, borderTop: `3px solid ${gold}`, borderRadius: "10px", overflow: "hidden", position: "relative", minHeight: "84px" }}>
-            <div style={{ position: "absolute", bottom: "-4px", left: "158px", fontSize: "52px", color: lightGold, opacity: 0.1, fontStyle: "italic", pointerEvents: "none", userSelect: "none", lineHeight: 1, fontFamily: ff }}>{tier.chineseName}</div>
+            <div style={{ position: "absolute", bottom: "-4px", left: "100px", fontSize: "52px", color: lightGold, opacity: 0.1, fontStyle: "italic", pointerEvents: "none", userSelect: "none", lineHeight: 1, fontFamily: ff }}>{tier.chineseName}</div>
 
             <div className="tier-left">
               <div style={{ fontSize: "11px", color: gold, letterSpacing: "2px", fontFamily: ff }}>{tier.chineseName}</div>

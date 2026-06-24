@@ -61,7 +61,7 @@ function STitle({ children }) {
   return <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700", margin: "1.5rem 0 0.75rem", borderBottom: `0.5px solid ${GOLD_LIGHT}`, paddingBottom: "8px" }}>{children}</p>
 }
 
-const iStyle = { width: "100%", padding: "11px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: ff, fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box", borderRadius: "4px 4px 0 0" }
+const iStyle = { width: "100%", padding: "11px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: ff, fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box", borderRadius: "4px 4px 0 0", maxWidth: "100%" }
 const iReadOnly = { ...iStyle, background: "#F0EDE4", color: "#8a7050", cursor: "not-allowed" }
 const lStyle = { fontFamily: ff, fontSize: "11px", color: GOLD, display: "block", marginBottom: "8px", letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700" }
 const btnG = { padding: "11px 24px", background: `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "14px", fontWeight: "700", cursor: "pointer", whiteSpace: "nowrap" }
@@ -80,7 +80,7 @@ function FormField({ label, children, required, note }) {
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
     <div style={{ display: "flex", gap: "8px" }}>
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "88px", flex: "none" }}>
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "100px", flex: "none" }}>
         {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
       </select>
       <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={iStyle} />
@@ -425,8 +425,8 @@ export default function Users() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px", paddingBottom: "24px", borderBottom: `1px solid ${GOLD_LIGHT}`, flexWrap: "wrap" }}>
               <div style={{ width: "56px", height: "56px", borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "22px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{m.name?.charAt(0).toUpperCase()}</div>
-              <div style={{ flex: 1 }}>
-                <h1 style={{ fontFamily: ff, fontSize: "24px", color: BLACK, fontWeight: "700", margin: "0 0 8px" }}>{m.name}</h1>
+              <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
+                <h1 style={{ fontFamily: ff, fontSize: "22px", color: BLACK, fontWeight: "700", margin: "0 0 8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{m.name}</h1>
                 <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                   <Badge label={tierLabel(m.tier)} {...tierColour(m.tier)} />
                   <Badge label={tc(m.account_status)} {...statusColour(m.account_status)} />
@@ -506,7 +506,7 @@ export default function Users() {
                       <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: "0 0 2px" }}>{sgt(a.created_at)}</p>
                       <p style={{ fontFamily: ff, fontSize: "12px", color: GOLD, margin: 0, fontWeight: "700" }}>{a.changed_by_name || "System"}</p>
                     </div>
-                    <div style={{ flex: 1 }}>
+                    <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
                       <p style={{ fontFamily: ff, fontSize: "13px", color: BLACK, margin: "0 0 2px", fontWeight: "700" }}>{tc(a.field_changed)}</p>
                       {a.old_value && <p style={{ fontFamily: ff, fontSize: "12px", color: "#6b5d4e", margin: "0 0 2px" }}>{a.old_value} → {a.new_value}</p>}
                       {a.change_note && <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: 0, fontStyle: "italic" }}>{a.change_note}</p>}
@@ -631,7 +631,7 @@ export default function Users() {
             <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
               <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
             </FormField>
-            <FormField label="TSSB Credits">
+            <FormField label="TSSB Credits" note="Enter TSSB credit balance from manual records">
               <input type="number" value={cf.tssb_credits} onChange={e => setCf({...cf, tssb_credits: e.target.value})} placeholder="e.g. 0" style={iStyle} />
             </FormField>
           </div>

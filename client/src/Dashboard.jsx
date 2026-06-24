@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import logo from "./logo.png"
 import MembershipTiers from "./MembershipTiers"
-import Users from "./Users"
 
 const GOLD = "#A87C2A"
 const GOLD_LIGHT = "#D4B86A"
@@ -211,11 +210,11 @@ function AccountSwitcher({ currentUser }) {
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "700", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
                     <p className="acc-email" style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.email}</p>
                   </div>
-                  <span className="acc-role" style={{ width: "130px", padding: "9px 0", textAlign: "center", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap", flexShrink: 0 }}>{roleLabel(acc.role)}</span>
+                  <span className="acc-role" style={{ padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap", flexShrink: 0 }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
-                    <span style={{ width: "130px", padding: "9px 0", textAlign: "center", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap", flexShrink: 0 }}>✓ Signed in</span>
+                    <span style={{ padding: "9px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap", flexShrink: 0 }}>✓ Signed in</span>
                   ) : (
-                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ width: "130px", padding: "9px 0", textAlign: "center", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{switching === acc.id ? "..." : "Switch"}</button>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{switching === acc.id ? "..." : "Switch"}</button>
                   )}
                 </div>
               </div>
@@ -264,6 +263,8 @@ export default function Dashboard({ user, onLogout }) {
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
           .acc-email { display: none !important; }
           .acc-role { display: none !important; }
+          .member-name { font-size: 18px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 160px !important; }
+          select, input { max-width: 100% !important; box-sizing: border-box !important; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
@@ -313,8 +314,7 @@ export default function Dashboard({ user, onLogout }) {
         {activePage === "Dashboard" && <DashboardHome user={user} />}
         {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
         {activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
-        {activePage === "Users" && <Users />}
-        {!["Dashboard", "Account Switcher", "Membership Tiers", "Users"].includes(activePage) && (
+        {!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
           <div>
             <PageHeader sub="Module" title={activePage} />
             <ComingSoon label={activePage} />
