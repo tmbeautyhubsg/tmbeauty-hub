@@ -170,6 +170,78 @@ app.post("/api/auth/set-password", async (req, res) => {
   }
 })
 
+// GET /api/packages — returns all active packages
+app.get("/api/packages", async (req, res) => {
+  const auth = req.headers.authorization
+  if (!auth) return res.status(401).json({ error: "Unauthorized" })
+  try {
+    jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET)
+    const result = await pool.query(
+      "SELECT * FROM packages WHERE is_active = true ORDER BY display_order"
+    )
+    res.json({ packages: result.rows })
+  } catch (e) {
+    res.status(401).json({ error: "Invalid token" })
+  }
+})
+
+// PUT /api/admin/packages/:id — superadmin edits a package
+app.put("/api/admin/packages/:id", async (req, res) => {
+  const auth = req.headers.authorization
+  if (!auth) return res.status(401).json({ error: "Unauthorized" })
+  try {
+    const decoded = jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET)
+    if (decoded.role !== "superadmin") return res.status(403).json({ error: "Forbidden" })
+
+    const { field, value, change_note } = req.body
+    const allowed = ["chinese_name","english_name","price","base_credits","foc_credits","replenishment_price","closing_fee","upgrade_fee","upgrade_target","is_active"]
+    if (!allowed.includes(field)) return res.status(400).json({ error: "Invalid field" })
+
+    const current = await pool.query("SELECT * FROM packages WHERE id = $1", [req.params.id])
+    if (!current.rows.length) return res.status(404).json({ error: "Package not found" })
+
+    const old_value = current.rows[0][field]
+
+    await pool.query(
+      `UPDATE packages SET ${field} = $1, updated_at = NOW(), updated_by = $2 WHERE id = $3`,
+      [value, decoded.id, req.params.id]
+    )
+
+    await pool.query(
+      "INSERT INTO package_audit_log (package_id, changed_by, field_changed, old_value, new_value, change_note, effective_date) VALUES ($1, $2, $3, $4, $5, $6, NOW())",
+      [req.params.id, decoded.id, field, String(old_value), String(value), change_note || null]
+    )
+
+    const updated = await pool.query("SELECT * FROM packages WHERE id = $1", [req.params.id])
+    res.json({ package: updated.rows[0] })
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ error: "Server error" })
+  }
+})
+
+// GET /api/admin/packages/:id/audit — superadmin views audit log
+app.get("/api/admin/packages/:id/audit", async (req, res) => {
+  const auth = req.headers.authorization
+  if (!auth) return res.status(401).json({ error: "Unauthorized" })
+  try {
+    const decoded = jwt.verify(auth.split(" ")[1], process.env.JWT_SECRET)
+    if (decoded.role !== "superadmin") return res.status(403).json({ error: "Forbidden" })
+
+    const result = await pool.query(
+      `SELECT pal.*, u.name as changed_by_name 
+       FROM package_audit_log pal 
+       LEFT JOIN users u ON pal.changed_by = u.id 
+       WHERE pal.package_id = $1 
+       ORDER BY pal.created_at DESC`,
+      [req.params.id]
+    )
+    res.json({ audit: result.rows })
+  } catch (e) {
+    res.status(500).json({ error: "Server error" })
+  }
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
