@@ -287,7 +287,7 @@ export default function Dashboard({ user, onLogout }) {
         @media (max-width: 768px) {
           .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; position: fixed !important; z-index: 200; height: 100vh; top: 0; left: 0; }
           .sidebar.open { transform: translateX(0); }
-          .sidebar-backdrop { display: block !important; }
+
           .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
           .hamburger { display: none !important; }
           .mobile-topbar { display: flex !important; }
@@ -309,7 +309,7 @@ export default function Dashboard({ user, onLogout }) {
       )}
 
       {/* Mobile backdrop */}
-      <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} style={{ display: "none", position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 199, marginTop: topOffset }} />
+      {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 199, marginTop: topOffset }} />}
 
       {/* Hamburger button */}
       <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", position: "fixed", top: topOffset + 10, left: 10, zIndex: 300, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "8px 10px", cursor: "pointer", flexDirection: "column", gap: "4px", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", pointerEvents: "auto" }}>
