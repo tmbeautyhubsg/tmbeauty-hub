@@ -1,6 +1,8 @@
 import { useState } from "react"
 import logo from "./logo.png"
 import Dashboard from "./Dashboard"
+import SetPassword from "./SetPassword"
+import ForgotPassword from "./ForgotPassword"
 
 export default function App() {
   const [email, setEmail] = useState("")
@@ -13,7 +15,13 @@ export default function App() {
     return u ? JSON.parse(u) : null
   })
 
-  // If already logged in, show dashboard
+  // Route: Set Password
+  if (window.location.pathname === "/set-password") return <SetPassword />
+
+  // Route: Forgot Password
+  if (window.location.pathname === "/forgot-password") return <ForgotPassword />
+
+  // Route: Dashboard
   if (currentUser) {
     return (
       <Dashboard
@@ -50,25 +58,19 @@ export default function App() {
     setLoading(false)
   }
 
+  // Route: Login
   return (
     <div style={{
-      height: "100vh",
-      background: "#F7F0E3",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "16px",
-      boxSizing: "border-box",
-      overflow: "hidden"
+      height: "100vh", background: "#F7F0E3",
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: "16px", boxSizing: "border-box", overflow: "hidden"
     }}>
       <div style={{ width: "100%", maxWidth: "460px", textAlign: "center" }}>
 
         {/* Logo */}
         <img src={logo} alt="TM Beauty Hub" style={{
-          width: "110px", height: "110px",
-          objectFit: "contain",
-          margin: "0 auto 10px",
-          display: "block",
+          width: "110px", height: "110px", objectFit: "contain",
+          margin: "0 auto 10px", display: "block",
           filter: "drop-shadow(0 4px 12px rgba(168,124,42,0.25))"
         }}/>
 
@@ -95,10 +97,8 @@ export default function App() {
         {/* Card */}
         <div style={{
           background: "linear-gradient(160deg, #FFFDF7 0%, #FDF6E3 100%)",
-          border: "1px solid #D4B86A",
-          borderTop: "3px solid #A87C2A",
-          padding: "40px 44px 36px",
-          position: "relative",
+          border: "1px solid #D4B86A", borderTop: "3px solid #A87C2A",
+          padding: "40px 44px 36px", position: "relative",
           boxShadow: "0 32px 80px rgba(168,124,42,0.18), 0 8px 24px rgba(0,0,0,0.10)"
         }}>
 
@@ -110,7 +110,7 @@ export default function App() {
 
           {/* Error */}
           {error && (
-            <div style={{ background: "#FFF0F0", border: "1px solid #E8AAAA", color: "#8B0000", padding: "10px 14px", marginBottom: "20px", fontSize: "13px", fontFamily: "'Playfair Display', serif", textAlign: "left" }}>
+            <div style={{ background: "#FFF0F0", border: "1px solid #E8AAAA", color: "#8B0000", padding: "10px 14px", marginBottom: "20px", fontSize: "14px", fontFamily: "'Playfair Display', serif", textAlign: "left" }}>
               {error}
             </div>
           )}
@@ -143,7 +143,10 @@ export default function App() {
                 onKeyDown={e => e.key === "Enter" && handleLogin()}
                 style={{ width: "100%", padding: "10px 36px 10px 4px", border: "none", borderBottom: "1.5px solid #D4B86A", fontSize: "15px", color: "#1A1A1A", background: "transparent", boxSizing: "border-box", outline: "none", fontFamily: "'Playfair Display', serif" }}
               />
-              <button onClick={() => setShowPassword(!showPassword)} style={{ position: "absolute", right: "4px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: "4px", lineHeight: 1 }}>
+              <button
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ position: "absolute", right: "4px", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", padding: "4px", lineHeight: 1 }}
+              >
                 {showPassword ? (
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A87C2A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
@@ -162,7 +165,10 @@ export default function App() {
 
           {/* Forgot password */}
           <div style={{ textAlign: "right", marginBottom: "32px" }}>
-            <span style={{ fontSize: "11px", color: "#A87C2A", fontFamily: "'Playfair Display', serif", fontStyle: "italic", cursor: "pointer" }}>
+            <span
+              onClick={() => window.location.href = "/forgot-password"}
+              style={{ fontSize: "11px", color: "#A87C2A", fontFamily: "'Playfair Display', serif", fontStyle: "italic", cursor: "pointer" }}
+            >
               Forgot your password?
             </span>
           </div>
@@ -177,8 +183,7 @@ export default function App() {
               color: "#FFFFFF", border: "none",
               fontSize: "11px", fontWeight: "700",
               cursor: loading ? "not-allowed" : "pointer",
-              letterSpacing: "5px",
-              fontFamily: "'Playfair Display', serif",
+              letterSpacing: "5px", fontFamily: "'Playfair Display', serif",
               textTransform: "uppercase",
               boxShadow: "0 4px 20px rgba(168,124,42,0.40)",
               opacity: loading ? 0.8 : 1
