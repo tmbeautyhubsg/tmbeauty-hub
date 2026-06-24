@@ -61,9 +61,9 @@ const muted = "#8a7050";
 const styles = {
   page: {
     fontFamily: "'Playfair Display', serif",
-    background: ivory,
-    minHeight: "100vh",
-    padding: "2.5rem 1.5rem",
+    background: "transparent",
+    
+    padding: "0",
   },
   header: {
     textAlign: "center",
@@ -83,9 +83,9 @@ const styles = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
     gap: "18px",
-    maxWidth: "980px",
+    maxWidth: "100%",
     margin: "0 auto",
   },
   card: {
@@ -233,7 +233,7 @@ const styles = {
     letterSpacing: "0.5px",
   },
   modalSection: {
-    background: ivory,
+    background: "transparent",
     border: `0.5px solid ${lightGold}`,
     borderRadius: "8px",
     padding: "12px 14px",
@@ -265,7 +265,7 @@ const styles = {
     marginBottom: "20px",
     padding: "10px 12px",
     borderLeft: `2px solid ${lightGold}`,
-    background: ivory,
+    background: "transparent",
     borderRadius: "0 6px 6px 0",
   },
   modalBtnRow: {
