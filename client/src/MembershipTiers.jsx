@@ -77,7 +77,7 @@ const styles = {
     letterSpacing: "1px",
   },
   subtitle: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: muted,
     letterSpacing: "1.5px",
   },
@@ -113,7 +113,7 @@ const styles = {
     userSelect: "none",
   },
   chineseName: {
-    fontSize: "11px",
+    fontSize: "13px",
     letterSpacing: "2px",
     color: gold,
     marginBottom: "4px",
@@ -149,7 +149,7 @@ const styles = {
     marginBottom: "2px",
   },
   priceSub: {
-    fontSize: "11px",
+    fontSize: "13px",
     color: muted,
     marginBottom: "16px",
     letterSpacing: "0.5px",
@@ -167,20 +167,20 @@ const styles = {
     gap: "8px",
   },
   rowLabel: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: muted,
     whiteSpace: "nowrap",
     flexShrink: 0,
   },
   rowValue: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: black,
     fontWeight: "600",
     textAlign: "right",
     whiteSpace: "nowrap",
   },
   rowValueGold: {
-    fontSize: "12px",
+    fontSize: "14px",
     color: gold,
     fontWeight: "600",
     textAlign: "right",
