@@ -288,7 +288,7 @@ export default function Dashboard({ user, onLogout }) {
           .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; position: fixed !important; z-index: 200; height: 100vh; top: 0; left: 0; }
           .sidebar.open { transform: translateX(0); }
           .sidebar-backdrop { display: block !important; }
-          .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
+          .main-content { margin-left: 0 !important; padding: 64px 16px 20px !important; }
           .hamburger { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
         }
