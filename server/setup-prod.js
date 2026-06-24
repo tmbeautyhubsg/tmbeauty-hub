@@ -1,8 +1,9 @@
+require("dotenv").config()
 const bcrypt = require("bcrypt")
 const { Pool } = require("pg")
 
 const pool = new Pool({
-  connectionString: "postgresql://postgres:rOhcpzzctrGUlROMOogmdeOxgMifErbv@reseau.proxy.rlwy.net:55654/railway",
+  connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 })
 
