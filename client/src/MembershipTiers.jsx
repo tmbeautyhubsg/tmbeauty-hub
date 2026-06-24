@@ -152,9 +152,9 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
             {/* Left — tier name */}
             <div style={{
-              width: "150px",
+              width: "120px",
               flexShrink: 0,
-              padding: "14px 20px",
+              padding: "12px 14px",
               borderRight: `0.5px solid #e8dcc8`,
               display: "flex",
               flexDirection: "column",
@@ -194,16 +194,16 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               <div style={{ ...cellStyle, borderRight: "none" }}>
                 <div style={slStyle}>Upgrade fee</div>
                 <div style={svStyle}>
-                  {tier.upgradeFee ? `SGD ${tier.upgradeFee} → ${tier.upgradeTarget}` : "—"}
+                  {tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}
                 </div>
               </div>
             </div>
 
             {/* Right — price + button */}
             <div style={{
-              width: "160px",
+              width: "145px",
               flexShrink: 0,
-              padding: "14px 16px",
+              padding: "12px 14px",
               borderLeft: `0.5px solid #e8dcc8`,
               display: "flex",
               flexDirection: "column",
@@ -211,7 +211,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               alignItems: "center",
               gap: "4px",
             }}>
-              <div style={{ fontSize: "20px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff, height: "28px", display: "flex", alignItems: "center" }}>
+              <div style={{ fontSize: "17px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff, height: "28px", display: "flex", alignItems: "center" }}>
                 SGD {tier.price.toLocaleString()}
               </div>
               <div style={{ fontSize: "10px", color: muted, whiteSpace: "nowrap", fontFamily: ff, height: "16px", display: "flex", alignItems: "center" }}>
