@@ -7,6 +7,7 @@ const GOLD_LIGHT = "#D4B86A"
 const CREAM = "#F7F0E3"
 const WHITE = "#FFFFFF"
 const BLACK = "#1A1A1A"
+const SIDEBAR_W = 260
 
 function StatCard({ label, value }) {
   return (
@@ -37,7 +38,7 @@ function NavItem({ label, active, onClick }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        padding: "15px 24px",
+        padding: "16px 24px",
         cursor: "pointer",
         color: on ? GOLD : BLACK,
         fontFamily: "'Playfair Display', serif",
@@ -45,7 +46,10 @@ function NavItem({ label, active, onClick }) {
         borderLeft: `4px solid ${on ? GOLD : "transparent"}`,
         background: on ? "#FDF6E3" : "transparent",
         fontWeight: on ? "700" : "400",
-        transition: "all 0.15s"
+        transition: "all 0.15s",
+        minHeight: "52px",
+        display: "flex",
+        alignItems: "center",
       }}
     >{label}</div>
   )
@@ -55,7 +59,7 @@ function PageHeader({ sub, title }) {
   return (
     <div style={{ marginBottom: "36px", borderBottom: `1px solid ${GOLD_LIGHT}`, paddingBottom: "24px" }}>
       <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "5px", textTransform: "uppercase", margin: "0 0 8px" }}>{sub}</p>
-      <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "34px", color: BLACK, fontWeight: "700", margin: 0 }}>{title}</h1>
+      <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", color: BLACK, fontWeight: "700", margin: 0 }}>{title}</h1>
     </div>
   )
 }
@@ -77,7 +81,7 @@ function DashboardHome({ user }) {
   return (
     <div>
       <PageHeader sub="Welcome back" title={user.name} />
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "36px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "16px", marginBottom: "36px" }}>
         <StatCard label="Total Members" value="—" />
         <StatCard label="Active Packages" value="—" />
         <StatCard label="Commission This Month" value="—" />
@@ -136,16 +140,12 @@ function AccountSwitcher({ currentUser }) {
   async function createAccount() {
     setCreating(true)
     if (!form.name.trim()) { setCreateError("Full name is required"); setCreating(false); return }
-if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setCreateError("Please enter a valid email address"); setCreating(false); return }
-if (form.password && form.password.length < 8) { setCreateError("Password must be at least 8 characters"); setCreating(false); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setCreateError("Please enter a valid email address"); setCreating(false); return }
     setCreateError("")
     try {
       const res = await fetch("https://tmbeauty-hub-production.up.railway.app/api/admin/users", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
         body: JSON.stringify(form)
       })
       const data = await res.json()
@@ -153,14 +153,11 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
       setAccounts(prev => [...prev, data.user])
       setForm({ name: "", email: "", password: "", role: "manager" })
       setShowCreate(false)
-    } catch (e) {
-      setCreateError("Unable to connect to server")
-    }
+    } catch (e) { setCreateError("Unable to connect to server") }
     setCreating(false)
   }
 
   const roleLabel = r => r.replace(/_/g, " ").toUpperCase()
-
   const roleColour = r => {
     if (r === "superadmin") return { bg: "#FDF6E3", color: "#7A5C10" }
     if (r === "branch_office") return { bg: "#EEF4FB", color: "#1A3A5C" }
@@ -168,97 +165,38 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
     if (r === "director") return { bg: "#F8EEF6", color: "#5C1A4A" }
     return { bg: "#F5F5F5", color: "#333" }
   }
-
   const filtered = accounts.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
     a.email.toLowerCase().includes(search.toLowerCase()) ||
     a.role.toLowerCase().includes(search.toLowerCase())
   )
-
-  const inputStyle = {
-    width: "100%", padding: "12px 14px",
-    border: `1px solid ${GOLD_LIGHT}`,
-    borderBottom: `2px solid ${GOLD}`,
-    background: "#FDFAF2",
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "15px", color: BLACK,
-    outline: "none", boxSizing: "border-box"
-  }
-
-  const labelStyle = {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "11px", color: GOLD,
-    display: "block", marginBottom: "8px",
-    letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700"
-  }
+  const inputStyle = { width: "100%", padding: "12px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box" }
+  const labelStyle = { fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, display: "block", marginBottom: "8px", letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700" }
 
   return (
     <div>
-      {/* Header */}
-      <div style={{ marginBottom: "28px", borderBottom: `1px solid ${GOLD_LIGHT}`, paddingBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
+      <div style={{ marginBottom: "28px", borderBottom: `1px solid ${GOLD_LIGHT}`, paddingBottom: "24px", display: "flex", alignItems: "flex-end", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
         <div>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "5px", textTransform: "uppercase", margin: "0 0 8px" }}>Superadmin</p>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "34px", color: BLACK, fontWeight: "700", margin: "0 0 4px" }}>Account Switcher</h1>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", color: BLACK, fontWeight: "700", margin: "0 0 4px" }}>Account Switcher</h1>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: "#666", margin: 0 }}>{accounts.length} accounts registered</p>
         </div>
-        <button
-          onClick={() => { setShowCreate(!showCreate); setCreateError("") }}
-          style={{
-            padding: "13px 28px",
-            background: showCreate ? "#888" : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`,
-            color: WHITE, border: "none",
-            fontFamily: "'Playfair Display', serif",
-            fontSize: "12px", fontWeight: "700",
-            letterSpacing: "3px", textTransform: "uppercase",
-            cursor: "pointer",
-            boxShadow: "0 4px 16px rgba(168,124,42,0.25)"
-          }}
-        >{showCreate ? "Cancel" : "+ Add Account"}</button>
+        <button onClick={() => { setShowCreate(!showCreate); setCreateError("") }} style={{ padding: "13px 28px", background: showCreate ? "#888" : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 16px rgba(168,124,42,0.25)" }}>{showCreate ? "Cancel" : "+ Add Account"}</button>
       </div>
 
-      {/* Create form */}
       {showCreate && (
-        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, padding: "32px 36px", marginBottom: "28px", position: "relative" }}>
-          <div style={{ position: "absolute", bottom: "10px", right: "10px", width: "12px", height: "12px", borderBottom: `1px solid ${GOLD_LIGHT}`, borderRight: `1px solid ${GOLD_LIGHT}` }}/>
+        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, padding: "32px", marginBottom: "28px", position: "relative" }}>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: GOLD, letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 24px" }}>New Account</p>
-
-          {createError && (
-            <div style={{ background: "#FFF0F0", border: "1px solid #E8AAAA", color: "#8B0000", padding: "12px 16px", marginBottom: "20px", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
-              {createError}
-            </div>
-          )}
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginBottom: "24px" }}>
+          {createError && <div style={{ background: "#FFF0F0", border: "1px solid #E8AAAA", color: "#8B0000", padding: "12px 16px", marginBottom: "20px", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>{createError}</div>}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "24px" }}>
             <div>
               <label style={labelStyle}>Full Name</label>
-              <input
-  type="text"
-  placeholder="e.g. Celine Tan"
-  value={form.name}
-  onChange={e => {
-    const cleaned = e.target.value.replace(/\s+/g, ' ')
-    const titled = cleaned.replace(/\b\w/g, c => c.toUpperCase())
-    setForm({ ...form, name: titled })
-  }}
-  onBlur={e => setForm({ ...form, name: e.target.value.trim() })}
-  style={inputStyle}
-/>
+              <input type="text" placeholder="e.g. Celine Tan" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} />
             </div>
             <div>
               <label style={labelStyle}>Email Address</label>
-              <input
-  type="email"
-  placeholder="e.g. celine@example.com"
-  value={form.email}
-  onChange={e => setForm({ ...form, email: e.target.value.trim().toLowerCase() })}
-  style={{
-    ...inputStyle,
-    borderBottom: form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)
-      ? "2px solid #E24B4A"
-      : `2px solid ${GOLD}`
-  }}
-/>
-            </div>        
+              <input type="email" placeholder="e.g. celine@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value.trim().toLowerCase() })} style={inputStyle} />
+            </div>
             <div>
               <label style={labelStyle}>Role</label>
               <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inputStyle}>
@@ -269,46 +207,23 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
               </select>
             </div>
           </div>
-
-          <button
-            onClick={createAccount}
-            disabled={creating}
-            style={{
-              padding: "14px 36px",
-              background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`,
-              color: WHITE, border: "none",
-              fontFamily: "'Playfair Display', serif",
-              fontSize: "12px", fontWeight: "700",
-              letterSpacing: "3px", textTransform: "uppercase",
-              cursor: creating ? "not-allowed" : "pointer",
-              boxShadow: "0 4px 16px rgba(168,124,42,0.25)"
-            }}
-          >{creating ? "Creating..." : "Create Account"}</button>
+          <button onClick={createAccount} disabled={creating} style={{ padding: "14px 36px", background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", letterSpacing: "3px", textTransform: "uppercase", cursor: creating ? "not-allowed" : "pointer" }}>{creating ? "Creating..." : "Create Account"}</button>
         </div>
       )}
 
-      {/* Search */}
       <div style={{ marginBottom: "16px" }}>
-        <input
-          type="text"
-          placeholder="Search by name, email or role..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={inputStyle}
-        />
+        <input type="text" placeholder="Search by name, email or role..." value={search} onChange={e => setSearch(e.target.value)} style={inputStyle} />
       </div>
 
-      {/* Table */}
       {loading ? (
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
       ) : (
-        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}` }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "14px 24px", borderBottom: `1px solid ${GOLD_LIGHT}`, background: "#FDFAF2" }}>
+        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, overflowX: "auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "14px 24px", borderBottom: `1px solid ${GOLD_LIGHT}`, background: "#FDFAF2", minWidth: "500px" }}>
             {["Name", "Email", "Role", "Action"].map(h => (
               <p key={h} style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", margin: 0 }}>{h}</p>
             ))}
           </div>
-
           {filtered.length === 0 ? (
             <div style={{ padding: "32px 24px", textAlign: "center" }}>
               <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: "#999", margin: 0 }}>No accounts found</p>
@@ -318,34 +233,17 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
               const rc = roleColour(acc.role)
               const isCurrent = acc.id === currentUser.id
               return (
-                <div key={acc.id}
-                  style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "16px 24px", borderBottom: i < filtered.length - 1 ? `1px solid #F0E8CC` : "none", alignItems: "center", background: isCurrent ? "#FDFAF2" : WHITE, transition: "background 0.1s" }}
-                  onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.background = "#FDFAF2" }}
-                  onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.background = WHITE }}
-                >
+                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "16px 24px", borderBottom: i < filtered.length - 1 ? `1px solid #F0E8CC` : "none", alignItems: "center", background: isCurrent ? "#FDFAF2" : WHITE, minWidth: "500px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "38px", height: "38px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: "700", color: GOLD, flexShrink: 0 }}>
-                      {acc.name.charAt(0).toUpperCase()}
-                    </div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
+                    <div style={{ width: "38px", height: "38px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: "700", color: GOLD, flexShrink: 0 }}>{acc.name.charAt(0).toUpperCase()}</div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
                   </div>
-
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "14px", color: "#555", margin: 0 }}>{acc.email}</p>
-
-                  <span style={{ display: "inline-block", padding: "4px 12px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "10px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>
-                    {roleLabel(acc.role)}
-                  </span>
-
+                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#555", margin: 0 }}>{acc.email}</p>
+                  <span style={{ display: "inline-block", padding: "4px 10px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "10px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "1px", textTransform: "uppercase", margin: 0, fontWeight: "700" }}>You</p>
                   ) : (
-                    <button
-                      onClick={() => switchTo(acc)}
-                      disabled={switching === acc.id}
-                      style={{ padding: "8px 16px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "11px", fontWeight: "700", letterSpacing: "2px", textTransform: "uppercase", cursor: switching === acc.id ? "not-allowed" : "pointer" }}
-                    >
-                      {switching === acc.id ? "..." : "Switch"}
-                    </button>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "8px 16px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "11px", fontWeight: "700", letterSpacing: "2px", textTransform: "uppercase", cursor: switching === acc.id ? "not-allowed" : "pointer" }}>{switching === acc.id ? "..." : "Switch"}</button>
                   )}
                 </div>
               )
@@ -359,6 +257,7 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
 
 export default function Dashboard({ user, onLogout }) {
   const [activePage, setActivePage] = useState("Dashboard")
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const isImpersonating = !!localStorage.getItem("impersonate_token")
 
   function stopImpersonating() {
@@ -370,27 +269,56 @@ export default function Dashboard({ user, onLogout }) {
   }
 
   const navItems = [
-  "Dashboard", "Hierarchy", "Inventory",
-  "Packages", "Membership Tiers", "Commission", "Billing", "Users",
-  ...(user.role === "superadmin" ? ["Account Switcher"] : [])
-]
+    "Dashboard", "Hierarchy", "Inventory",
+    "Packages", "Membership Tiers", "Commission", "Billing", "Users",
+    ...(user.role === "superadmin" ? ["Account Switcher"] : [])
+  ]
+
+  function handleNav(item) {
+    setActivePage(item)
+    setSidebarOpen(false)
+  }
+
+  const topOffset = isImpersonating ? 48 : 0
 
   return (
     <div style={{ minHeight: "100vh", background: CREAM, display: "flex" }}>
+      <style>{`
+        @media (max-width: 768px) {
+          .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; position: fixed !important; z-index: 200; height: 100vh; top: 0; left: 0; }
+          .sidebar.open { transform: translateX(0); }
+          .sidebar-backdrop { display: block !important; }
+          .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
+          .hamburger { display: flex !important; }
+          .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
+        }
+        @media (min-width: 769px) {
+          .sidebar { transform: none !important; position: relative !important; }
+          .hamburger { display: none !important; }
+          .sidebar-backdrop { display: none !important; }
+        }
+      `}</style>
 
       {/* Impersonation banner */}
       {isImpersonating && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 999, background: "#7A5C10", color: WHITE, padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
-          <span>Viewing as <strong>{user.name}</strong> — Impersonation Mode Active</span>
-          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, color: WHITE, padding: "8px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase" }}>
-            Return to Superadmin
-          </button>
+        <div className="impersonate-bar" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 999, background: "#7A5C10", color: WHITE, padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
+          <span>Viewing as <strong>{user.name}</strong></span>
+          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, color: WHITE, padding: "8px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase" }}>Return to Superadmin</button>
         </div>
       )}
 
-      {/* Sidebar */}
-      <div style={{ width: "260px", background: WHITE, borderRight: `1px solid ${GOLD_LIGHT}`, display: "flex", flexDirection: "column", flexShrink: 0, marginTop: isImpersonating ? "48px" : 0 }}>
+      {/* Mobile backdrop */}
+      <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} style={{ display: "none", position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 199, marginTop: topOffset }} />
 
+      {/* Hamburger button */}
+      <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", position: "fixed", top: topOffset + 12, left: 12, zIndex: 300, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "10px 12px", cursor: "pointer", flexDirection: "column", gap: "5px", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
+        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
+        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
+      </button>
+
+      {/* Sidebar */}
+      <div className={`sidebar${sidebarOpen ? " open" : ""}`} style={{ width: `${SIDEBAR_W}px`, background: WHITE, borderRight: `1px solid ${GOLD_LIGHT}`, display: "flex", flexDirection: "column", flexShrink: 0, marginTop: topOffset, overflowY: "auto" }}>
         <div style={{ padding: "32px 20px 24px", borderBottom: `1px solid #EDE0B8`, textAlign: "center" }}>
           <img src={logo} alt="TM Beauty Hub" style={{ width: "80px", height: "80px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(168,124,42,0.25))" }}/>
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "12px", color: GOLD, letterSpacing: "3px", margin: "12px 0 3px", textTransform: "uppercase", fontWeight: "700" }}>TM BEAUTY HUB</h2>
@@ -404,30 +332,30 @@ export default function Dashboard({ user, onLogout }) {
 
         <nav style={{ flex: 1, padding: "10px 0" }}>
           {navItems.map(item => (
-            <NavItem key={item} label={item} active={activePage === item} onClick={() => setActivePage(item)} />
+            <NavItem key={item} label={item} active={activePage === item} onClick={() => handleNav(item)} />
           ))}
         </nav>
 
         <div style={{ padding: "20px", borderTop: `1px solid #EDE0B8` }}>
-          <button onClick={onLogout} style={{ width: "100%", padding: "13px", background: "transparent", border: `1px solid ${GOLD}`, color: GOLD, fontFamily: "'Playfair Display', serif", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer" }}>
-            Sign Out
-          </button>
+          <button onClick={onLogout} style={{ width: "100%", padding: "13px", background: "transparent", border: `1px solid ${GOLD}`, color: GOLD, fontFamily: "'Playfair Display', serif", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer" }}>Sign Out</button>
         </div>
       </div>
 
       {/* Main content */}
-      <div style={{ flex: 1, padding: "48px 56px", marginTop: isImpersonating ? "48px" : 0, overflowY: "auto" }}>
-        {activePage === "Dashboard" && <DashboardHome user={user} />}
-{activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
-{activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
-{!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
-  <div>
-    <PageHeader sub="Module" title={activePage} />
-    <ComingSoon label={activePage} />
-  </div>
-)}
-      </div>
+      <div className="main-content" style={{ flex: 1, padding: "48px 56px", marginTop: topOffset, overflowY: "auto", marginLeft: 0 }}>
+        {/* Mobile page title bar */}
+        <div style={{ display: "none" }} className="mobile-header" />
 
+        {activePage === "Dashboard" && <DashboardHome user={user} />}
+        {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
+        {activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
+        {!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
+          <div>
+            <PageHeader sub="Module" title={activePage} />
+            <ComingSoon label={activePage} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
