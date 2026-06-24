@@ -418,16 +418,18 @@ export default function Users() {
     <div>
       <style>{`
         .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-        .ef-wrap { padding: 12px 16px; border-radius: 8px; box-sizing: border-box; overflow: hidden; width: 100%; }
-        .ef-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; }
-        .ef-input { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; }
-        .ef-phone { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
+        .ef-wrap { padding: 12px 16px; border-radius: 8px; box-sizing: border-box; width: 100%; min-width: 0; }
+        .ef-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; min-width: 0 !important; }
+        .ef-input { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; min-width: 0 !important; }
+        .ef-phone { display: flex; gap: 8px; width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden; }
         .ef-cc { width: 88px !important; min-width: 0 !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
         .ef-num { flex: 1 !important; min-width: 0 !important; box-sizing: border-box !important; }
         @media (max-width: 768px) {
           .detail-grid { grid-template-columns: 1fr !important; }
-          .ef-select { font-size: 16px !important; }
-          .ef-input { font-size: 16px !important; }
+          .ef-select { font-size: 16px !important; max-width: calc(100vw - 80px) !important; }
+          .ef-input { font-size: 16px !important; max-width: calc(100vw - 80px) !important; }
+          .ef-wrap { max-width: calc(100vw - 32px); overflow: hidden; }
+          .ef-phone { max-width: calc(100vw - 80px); }
         }
       `}</style>
       <button style={{ ...btnO, marginBottom: "24px" }} onClick={() => setView("list")}>← Back to Members</button>
