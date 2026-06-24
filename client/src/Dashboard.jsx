@@ -181,7 +181,7 @@ function AccountSwitcher({ currentUser }) {
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "28px", color: BLACK, fontWeight: "700", margin: "0 0 4px" }}>Account Switcher</h1>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: "#666", margin: 0 }}>{accounts.length} accounts registered</p>
         </div>
-        <button onClick={() => { setShowCreate(!showCreate); setCreateError("") }} style={{ padding: "13px 28px", background: showCreate ? "#888" : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer", boxShadow: "0 4px 16px rgba(168,124,42,0.25)" }}>{showCreate ? "Cancel" : "+ Add Account"}</button>
+        <button onClick={() => { setShowCreate(!showCreate); setCreateError("") }} style={{ padding: "13px 28px", background: showCreate ? "#888" : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", cursor: "pointer", boxShadow: "0 4px 16px rgba(168,124,42,0.25)" }}>{showCreate ? "Cancel" : "+ Add Account"}</button>
       </div>
 
       {showCreate && (
@@ -207,7 +207,7 @@ function AccountSwitcher({ currentUser }) {
               </select>
             </div>
           </div>
-          <button onClick={createAccount} disabled={creating} style={{ padding: "14px 36px", background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", letterSpacing: "3px", textTransform: "uppercase", cursor: creating ? "not-allowed" : "pointer" }}>{creating ? "Creating..." : "Create Account"}</button>
+          <button onClick={createAccount} disabled={creating} style={{ padding: "14px 36px", background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", cursor: creating ? "not-allowed" : "pointer", boxShadow: "0 4px 16px rgba(168,124,42,0.25)" }}>{creating ? "Creating..." : "Create Account"}</button>
         </div>
       )}
 
@@ -241,9 +241,9 @@ function AccountSwitcher({ currentUser }) {
                   <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#555", margin: 0 }}>{acc.email}</p>
                   <span style={{ display: "inline-block", padding: "4px 10px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "10px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "1px", textTransform: "uppercase", margin: 0, fontWeight: "700" }}>You</p>
+                    <div style={{ display: "inline-block", padding: "10px 20px", background: "#FDF6E3", border: `1px solid ${GOLD}`, borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", color: GOLD, fontWeight: "700", letterSpacing: "1px", textAlign: "center" }}>You</div>
                   ) : (
-                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "8px 16px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", fontFamily: "'Playfair Display', serif", fontSize: "11px", fontWeight: "700", letterSpacing: "2px", textTransform: "uppercase", cursor: switching === acc.id ? "not-allowed" : "pointer" }}>{switching === acc.id ? "..." : "Switch"}</button>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "10px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "1px", cursor: switching === acc.id ? "not-allowed" : "pointer", boxShadow: "0 4px 12px rgba(168,124,42,0.3)" }}>{switching === acc.id ? "Switching..." : "Switch"}</button>
                   )}
                 </div>
               )
@@ -304,7 +304,7 @@ export default function Dashboard({ user, onLogout }) {
       {isImpersonating && (
         <div className="impersonate-bar" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 999, background: "#7A5C10", color: WHITE, padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
           <span>Viewing as <strong>{user.name}</strong></span>
-          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, color: WHITE, padding: "8px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase" }}>Return to Superadmin</button>
+          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, borderRadius: "8px", color: WHITE, padding: "10px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "1px" }}>Return to Superadmin</button>
         </div>
       )}
 
@@ -338,7 +338,7 @@ export default function Dashboard({ user, onLogout }) {
         </nav>
 
         <div style={{ padding: "20px", borderTop: `1px solid #EDE0B8` }}>
-          <button onClick={onLogout} style={{ width: "100%", padding: "13px", background: "transparent", border: `1px solid ${GOLD}`, color: GOLD, fontFamily: "'Playfair Display', serif", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", cursor: "pointer" }}>Sign Out</button>
+          <button onClick={onLogout} style={{ width: "100%", padding: "13px", background: "transparent", border: `1px solid ${GOLD}`, borderRadius: "8px", color: GOLD, fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", cursor: "pointer" }}>Sign Out</button>
         </div>
       </div>
 
