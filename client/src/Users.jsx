@@ -120,7 +120,7 @@ function CustomSelect({ value, onChange, options }) {
         <span style={{ color: GOLD, fontSize: "11px", marginLeft: "8px", flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
       </div>
       {open && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }}>
+        <div style={{ position: "absolute", top: "100%", left: 0, minWidth: "150px", zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }}>
           {options.map(o => {
             const val = o.value ?? o
             const lbl = o.label ?? o
@@ -612,23 +612,16 @@ export default function Users() {
       <STitle>Membership Details</STitle>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "8px" }}>
         <FormField label="Tier" required>
-          <select value={cf.tier} onChange={e => { const pkg = packages.find(p => p.tier_id === e.target.value); setCf({...cf, tier: e.target.value, package_id: pkg?.id || "", amount_paid: ""}) }} style={iStyle}>
-            {TIERS.map(t => <option key={t} value={t}>{tierLabel(t)}</option>)}
-          </select>
+          <CustomSelect value={cf.tier} onChange={v => { const pkg = packages.find(p => p.tier_id === v); setCf({...cf, tier: v, package_id: pkg?.id || "", amount_paid: ""}) }} options={TIERS.map(t => ({ value: t, label: tierLabel(t) }))} />
         </FormField>
         <FormField label="Package">
-          <select value={cf.package_id} onChange={e => setCf({...cf, package_id: e.target.value, amount_paid: ""})} style={iStyle}>
-            <option value="">Select package...</option>
-            {packages.filter(p => p.tier_id === cf.tier).map(p => <option key={p.id} value={p.id}>{p.english_name} — SGD {parseFloat(p.price).toLocaleString()}</option>)}
-          </select>
+          <CustomSelect value={cf.package_id} onChange={v => setCf({...cf, package_id: v, amount_paid: ""})} options={[{ value: "", label: "Select package..." }, ...packages.filter(p => p.tier_id === cf.tier).map(p => ({ value: String(p.id), label: `${p.english_name} — SGD ${parseFloat(p.price).toLocaleString()}` }))]} />
         </FormField>
         <FormField label="Upline Member">
           <MemberSelector value={cf.upline_user_id} onChange={v => setCf({...cf, upline_user_id: v})} placeholder="Search by name (minimum 2 characters)..." />
         </FormField>
         <FormField label="Onboarding Type">
-          <select value={cf.onboarding_type} onChange={e => setCf({...cf, onboarding_type: e.target.value})} style={iStyle}>
-            {ONBOARDING_TYPES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
+          <CustomSelect value={cf.onboarding_type} onChange={v => setCf({...cf, onboarding_type: v})} options={ONBOARDING_TYPES} />
         </FormField>
         <FormField label="Date Added">
           <input type="date" value={cf.onboarding_date} onChange={e => setCf({...cf, onboarding_date: e.target.value})} style={iStyle} />
@@ -643,10 +636,7 @@ export default function Users() {
       )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "8px" }}>
         <FormField label="Payment Status">
-          <select value={cf.payment_status} onChange={e => setCf({...cf, payment_status: e.target.value, amount_paid: ""})} style={iStyle}>
-            <option value="full">Full Payment</option>
-            <option value="partial">Partial Payment</option>
-          </select>
+          <CustomSelect value={cf.payment_status} onChange={v => setCf({...cf, payment_status: v, amount_paid: ""})} options={[{ value: "full", label: "Full Payment" }, { value: "partial", label: "Partial Payment" }]} />
         </FormField>
         <FormField label={cf.payment_status === "full" ? "Amount Paid (SGD)" : "First Instalment (SGD)"}>
           {cf.payment_status === "full"
@@ -655,9 +645,7 @@ export default function Users() {
           }
         </FormField>
         <FormField label="Payment Method">
-          <select value={cf.payment_method} onChange={e => setCf({...cf, payment_method: e.target.value, payment_method_other: ""})} style={iStyle}>
-            {PAYMENT_METHODS.filter(m => (cf.onboarding_type === "manual_historical" || cf.onboarding_type === "superadmin_direct") ? m !== "Stripe" : true).map(m => <option key={m} value={m}>{m}</option>)}
-          </select>
+          <CustomSelect value={cf.payment_method} onChange={v => setCf({...cf, payment_method: v, payment_method_other: ""})} options={PAYMENT_METHODS.filter(m => (cf.onboarding_type === "manual_historical" || cf.onboarding_type === "superadmin_direct") ? m !== "Stripe" : true).map(m => ({ value: m, label: m }))} />
         </FormField>
         {cf.payment_method === "Other" && (
           <FormField label="Specify Payment Method" note={`${cf.payment_method_other.length}/50 characters`}>
