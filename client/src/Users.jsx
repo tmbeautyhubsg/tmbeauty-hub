@@ -84,6 +84,7 @@ function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeh
           value={countryCode}
           onChange={onCountryChange}
           options={COUNTRIES.map(c => ({ value: c.code, label: c.label }))}
+          compact
         />
       </div>
       <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={{ ...iStyle, flex: 1, minWidth: 0 }} />
@@ -92,7 +93,9 @@ function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeh
 }
 
 // ── Custom dropdown — replaces native <select> in edit fields ──
-function CustomSelect({ value, onChange, options }) {
+// compact=true → panel sizes to content (for narrow triggers like phone cc)
+// compact=false (default) → panel stretches full width of trigger
+function CustomSelect({ value, onChange, options, compact = false }) {
   const [open, setOpen] = useState(false)
   const ref = useRef(null)
   const selected = options.find(o => (o.value ?? o) === value)
@@ -120,7 +123,10 @@ function CustomSelect({ value, onChange, options }) {
         <span style={{ color: GOLD, fontSize: "11px", marginLeft: "8px", flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
       </div>
       {open && (
-        <div style={{ position: "absolute", top: "100%", left: 0, minWidth: "150px", zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }}>
+        <div style={compact
+          ? { position: "absolute", top: "100%", left: 0, minWidth: "max-content", zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "260px", overflowY: "auto" }
+          : { position: "absolute", top: "100%", left: 0, right: 0, zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }
+        }>
           {options.map(o => {
             const val = o.value ?? o
             const lbl = o.label ?? o
@@ -130,7 +136,7 @@ function CustomSelect({ value, onChange, options }) {
                 key={val}
                 onMouseDown={e => { e.preventDefault(); onChange(val); setOpen(false) }}
                 onTouchEnd={e => { e.preventDefault(); onChange(val); setOpen(false) }}
-                style={{ padding: "12px 16px", cursor: "pointer", fontFamily: ff, fontSize: "15px", color: isSelected ? GOLD : BLACK, fontWeight: isSelected ? "700" : "400", background: isSelected ? "#FDF6E3" : "transparent", borderBottom: `0.5px solid ${GOLD_LIGHT}` }}
+                style={{ padding: "12px 16px", cursor: "pointer", fontFamily: ff, fontSize: "15px", color: isSelected ? GOLD : BLACK, fontWeight: isSelected ? "700" : "400", background: isSelected ? "#FDF6E3" : "transparent", borderBottom: `0.5px solid ${GOLD_LIGHT}`, whiteSpace: compact ? "nowrap" : "normal" }}
                 onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#FDF6E3" }}
                 onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "transparent" }}
               >
