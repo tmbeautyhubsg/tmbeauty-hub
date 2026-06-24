@@ -79,7 +79,7 @@ function FormField({ label, children, required, note }) {
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
     <div style={{ display: "flex", gap: "8px", width: "100%", boxSizing: "border-box" }}>
-      <div style={{ width: "120px", flexShrink: 0 }}>
+      <div style={{ width: "96px", flexShrink: 0 }}>
         <CustomSelect
           value={countryCode}
           onChange={onCountryChange}
@@ -689,7 +689,7 @@ export default function Users() {
             <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
               <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
             </FormField>
-            <FormField label="TSSB Credits" note="Enter TSSB credit balance from manual records">
+            <FormField label="TSSB Credits">
               <input type="number" value={cf.tssb_credits} onChange={e => setCf({...cf, tssb_credits: e.target.value})} placeholder="e.g. 0" style={iStyle} />
             </FormField>
           </div>

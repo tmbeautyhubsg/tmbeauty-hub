@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const API = "https://tmbeauty-hub-production.up.railway.app"
 const gold = "#A87C2A"
@@ -12,6 +12,65 @@ const mockUser = { hasUpline: true, uplineName: "Sarah Tan", uplineRole: "Direct
 
 const iStyle = { width: "100%", padding: "10px 12px", border: `1px solid ${lightGold}`, borderBottom: `2px solid ${gold}`, background: "#FDFAF2", fontFamily: ff, fontSize: "14px", color: black, outline: "none", boxSizing: "border-box", borderRadius: "4px 4px 0 0" }
 const lStyle = { fontSize: "11px", color: gold, letterSpacing: "2px", textTransform: "uppercase", display: "block", marginBottom: "6px", fontFamily: ff, fontWeight: "700" }
+
+function CustomSelect({ value, onChange, options }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  const selected = options.find(o => (o.value ?? o) === value)
+  const label = selected?.label ?? selected ?? value ?? "Select..."
+
+  useEffect(() => {
+    function handleOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener("mousedown", handleOutside)
+    document.addEventListener("touchstart", handleOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleOutside)
+      document.removeEventListener("touchstart", handleOutside)
+    }
+  }, [])
+
+  return (
+    <div ref={ref} style={{ position: "relative", width: "100%", boxSizing: "border-box" }}>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{ ...iStyle, display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", userSelect: "none" }}
+      >
+        <span style={{ fontFamily: ff, fontSize: "14px", color: black }}>{label}</span>
+        <span style={{ color: gold, fontSize: "11px", marginLeft: "8px", flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 999, background: "#FDFAF2", border: `1px solid ${lightGold}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }}>
+          {options.map(o => {
+            const val = o.value ?? o
+            const lbl = o.label ?? o
+            const isSelected = val === value
+            return (
+              <div
+                key={val}
+                onMouseDown={e => { e.preventDefault(); onChange(val); setOpen(false) }}
+                onTouchEnd={e => { e.preventDefault(); onChange(val); setOpen(false) }}
+                style={{ padding: "11px 14px", cursor: "pointer", fontFamily: ff, fontSize: "14px", color: isSelected ? gold : black, fontWeight: isSelected ? "700" : "400", background: isSelected ? "#FDF6E3" : "transparent", borderBottom: `0.5px solid ${lightGold}` }}
+                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#FDF6E3" }}
+                onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "transparent" }}
+              >
+                {lbl}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+const UPGRADE_TARGET_OPTIONS = [
+  { value: "", label: "— Not applicable —" },
+  { value: "director", label: "Director" },
+  { value: "ceo", label: "CEO" },
+  { value: "branch_office", label: "Branch Office" },
+]
 
 export default function MembershipTiers({ isSuperAdmin = false }) {
   const [tiers, setTiers] = useState([])
@@ -95,7 +154,6 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
       <style>{`
         .mt-card { background: ${cardBg}; border: 0.5px solid ${lightGold}; border-top: 3px solid ${gold}; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
         .mt-header { padding: 14px 16px; border-bottom: 0.5px solid #e8dcc8; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .mt-name-block {}
         .mt-chinese { font-size: 11px; color: ${gold}; letter-spacing: 2px; font-family: ${ff}; }
         .mt-english { font-size: 18px; font-weight: 700; color: ${black}; font-family: ${ff}; margin: 4px 0 0; }
         .mt-price { font-size: 20px; font-weight: 700; color: ${gold}; font-family: ${ff}; white-space: nowrap; }
@@ -117,7 +175,6 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
           .mt-stat:nth-last-child(-n+2) { border-bottom: none; }
           .mt-footer { justify-content: stretch; }
           .mt-btn { width: 100%; text-align: center; }
-          select, input { max-width: 100% !important; box-sizing: border-box !important; }
         }
       `}</style>
 
@@ -210,10 +267,10 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
         </div>
       )}
 
-      {/* Edit modal - scrollable */}
+      {/* Edit modal */}
       {editingTier && (
         <div onClick={() => setEditingTier(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 1000, padding: "1rem", overflowY: "auto" }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "1.5rem", width: "100%", maxWidth: "480px", fontFamily: ff, margin: "auto" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "1.5rem", width: "100%", maxWidth: "480px", fontFamily: ff, margin: "auto", boxSizing: "border-box" }}>
             <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "4px" }}>Edit Package</div>
             <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{editingTier.chineseName} · {editingTier.englishName}</div>
 
@@ -236,12 +293,11 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               ))}
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={lStyle}>Upgrade Target Tier</label>
-                <select value={editForm.upgrade_target || ""} onChange={e => setEditForm({...editForm, upgrade_target: e.target.value})} style={iStyle}>
-                  <option value="">— Not applicable —</option>
-                  <option value="director">Director</option>
-                  <option value="ceo">CEO</option>
-                  <option value="branch_office">Branch Office</option>
-                </select>
+                <CustomSelect
+                  value={editForm.upgrade_target || ""}
+                  onChange={v => setEditForm({...editForm, upgrade_target: v})}
+                  options={UPGRADE_TARGET_OPTIONS}
+                />
               </div>
             </div>
 
@@ -253,7 +309,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
             {editError && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 10px" }}>{editError}</p>}
 
-            <div style={{ background: "#FDF6E3", borderLeft: `2px solid ${gold}`, padding: "10px 12px", borderRadius: "0 6px 6px 0", marginBottom: "16px", fontSize: "11px", color: muted, lineHeight: "1.6" }}>
+            <div style={{ background: "#FDF6E3", borderLeft: `2px solid ${gold}`, padding: "10px 12px", borderRadius: "0 6px 6px 0", marginBottom: "16px", fontSize: "11px", color: muted, lineHeight: "1.6", fontFamily: ff }}>
               Only changed fields will be saved. Each change is logged with your name and timestamp. Cannot be undone.
             </div>
 
