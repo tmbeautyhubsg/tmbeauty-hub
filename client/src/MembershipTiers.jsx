@@ -201,9 +201,9 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
             {/* Right — price + button */}
             <div style={{
-              width: "145px",
+              width: "155px",
               flexShrink: 0,
-              padding: "12px 20px 12px 16px",
+              padding: "12px 16px",
               borderLeft: `0.5px solid #e8dcc8`,
               display: "flex",
               flexDirection: "column",
