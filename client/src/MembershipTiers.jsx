@@ -427,10 +427,11 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
                 <span style={styles.rowValue}>{tier.upgradeTarget}</span>
               </div>
             )}
+            <div style={{flex: 1}} />
 
             {!isSuperAdmin && (
               <button
-                style={styles.requestBtn}
+                style={{...styles.requestBtn, marginTop: "0"}}
                 onClick={() => handleRequest(tier)}
               >
                 Request to Join
