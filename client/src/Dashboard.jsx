@@ -314,7 +314,7 @@ export default function Dashboard({ user, onLogout }) {
         {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
         {activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
         {activePage === "Users" && <Users />}
-        {!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
+        {!["Dashboard", "Account Switcher", "Membership Tiers", "Users"].includes(activePage) && (
           <div>
             <PageHeader sub="Module" title={activePage} />
             <ComingSoon label={activePage} />
