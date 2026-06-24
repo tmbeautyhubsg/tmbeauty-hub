@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const GOLD = "#A87C2A"
 const GOLD_LIGHT = "#D4B86A"
@@ -51,7 +51,6 @@ function statusColour(s) {
   if (s === "ghost") return { bg: "#EDE9FE", color: "#5B21B6" }
   return { bg: "#E5E7EB", color: "#374151" }
 }
-function boolDisplay(v) { return v === true || v === "true" ? "Yes" : "No" }
 function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) }
 
 function Badge({ label, bg, color }) {
@@ -79,16 +78,69 @@ function FormField({ label, children, required, note }) {
 
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
-    <div className="ef-phone">
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} className="ef-cc ef-select" style={{ ...iStyle, width: "88px" }}>
+    <div style={{ display: "flex", gap: "8px", width: "100%", boxSizing: "border-box" }}>
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "88px", flexShrink: 0 }}>
         {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
       </select>
-      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} className="ef-num ef-input" style={{ ...iStyle }} />
+      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={{ ...iStyle, flex: 1, minWidth: 0 }} />
     </div>
   )
 }
 
-// Inline editable field
+// ── Custom dropdown — replaces native <select> in edit fields ──
+function CustomSelect({ value, onChange, options }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+  const selected = options.find(o => (o.value ?? o) === value)
+  const label = selected?.label ?? selected ?? value ?? "Select..."
+
+  useEffect(() => {
+    function handleOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener("mousedown", handleOutside)
+    document.addEventListener("touchstart", handleOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleOutside)
+      document.removeEventListener("touchstart", handleOutside)
+    }
+  }, [])
+
+  return (
+    <div ref={ref} style={{ position: "relative", width: "100%", boxSizing: "border-box" }}>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{ ...iStyle, display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", userSelect: "none" }}
+      >
+        <span style={{ fontFamily: ff, fontSize: "15px", color: BLACK }}>{label}</span>
+        <span style={{ color: GOLD, fontSize: "11px", marginLeft: "8px", flexShrink: 0 }}>{open ? "▲" : "▼"}</span>
+      </div>
+      {open && (
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, zIndex: 999, background: "#FDFAF2", border: `1px solid ${GOLD_LIGHT}`, borderTop: "none", borderRadius: "0 0 8px 8px", boxShadow: "0 8px 24px rgba(0,0,0,0.12)", maxHeight: "220px", overflowY: "auto" }}>
+          {options.map(o => {
+            const val = o.value ?? o
+            const lbl = o.label ?? o
+            const isSelected = val === value
+            return (
+              <div
+                key={val}
+                onMouseDown={e => { e.preventDefault(); onChange(val); setOpen(false) }}
+                onTouchEnd={e => { e.preventDefault(); onChange(val); setOpen(false) }}
+                style={{ padding: "12px 16px", cursor: "pointer", fontFamily: ff, fontSize: "15px", color: isSelected ? GOLD : BLACK, fontWeight: isSelected ? "700" : "400", background: isSelected ? "#FDF6E3" : "transparent", borderBottom: `0.5px solid ${GOLD_LIGHT}` }}
+                onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = "#FDF6E3" }}
+                onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "transparent" }}
+              >
+                {lbl}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Inline editable field ──
 function EditableField({ label, value, fieldKey, type = "text", options, unlocked, onSave, isPhone, countryCode }) {
   const [editing, setEditing] = useState(false)
   const [val, setVal] = useState(value || "")
@@ -112,7 +164,7 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
     : value || "—"
 
   return (
-    <div className="ef-wrap" style={{ background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, transition: "all 0.15s" }}>
+    <div style={{ padding: "12px 16px", borderRadius: "8px", boxSizing: "border-box", width: "100%", minWidth: 0, background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, transition: "all 0.15s" }}>
       <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>{label}</p>
       {editing ? (
         <div>
@@ -121,13 +173,13 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
               <PhoneInput countryCode={cc} phone={val} onCountryChange={setCc} onPhoneChange={setVal} />
             </div>
           ) : type === "select" && options ? (
-            <select value={val} onChange={e => setVal(e.target.value)} className="ef-select" style={{ ...iStyle, marginBottom: "8px" }}>
-              {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
-            </select>
+            <div style={{ marginBottom: "8px" }}>
+              <CustomSelect value={val} onChange={setVal} options={options} />
+            </div>
           ) : (
-            <input value={val} onChange={e => setVal(e.target.value)} className="ef-input" style={{ ...iStyle, marginBottom: "8px" }} />
+            <input value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px", width: "100%", boxSizing: "border-box" }} />
           )}
-          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" className="ef-input" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px" }} />
+          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px", width: "100%", boxSizing: "border-box" }} />
           {err && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 6px" }}>{err}</p>}
           <div style={{ display: "flex", gap: "8px" }}>
             <button onClick={() => { setEditing(false); setVal(value || ""); setNote(""); setErr("") }} style={{ ...btnO, padding: "7px 14px", fontSize: "12px" }}>Cancel</button>
@@ -415,23 +467,7 @@ export default function Users() {
 
   // ── DETAIL ──
   if (view === "detail") return (
-    <div>
-      <style>{`
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-        .ef-wrap { padding: 12px 16px; border-radius: 8px; box-sizing: border-box; width: 100%; min-width: 0; }
-        .ef-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; min-width: 0 !important; }
-        .ef-input { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; min-width: 0 !important; }
-        .ef-phone { display: flex; gap: 8px; width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden; }
-        .ef-cc { width: 88px !important; min-width: 0 !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
-        .ef-num { flex: 1 !important; min-width: 0 !important; box-sizing: border-box !important; }
-        @media (max-width: 768px) {
-          .detail-grid { grid-template-columns: 1fr !important; }
-          .ef-select { font-size: 16px !important; max-width: calc(100vw - 80px) !important; }
-          .ef-input { font-size: 16px !important; max-width: calc(100vw - 80px) !important; }
-          .ef-wrap { max-width: calc(100vw - 32px); overflow: hidden; }
-          .ef-phone { max-width: calc(100vw - 80px); }
-        }
-      `}</style>
+    <div style={{ maxWidth: "100%", overflowX: "hidden" }}>
       <button style={{ ...btnO, marginBottom: "24px" }} onClick={() => setView("list")}>← Back to Members</button>
       {detailLoading || !selected ? <p style={{ fontFamily: ff, color: GOLD }}>Loading...</p> : (() => {
         const m = selected.member
@@ -460,14 +496,14 @@ export default function Users() {
             </div>
 
             <STitle>Contact Information</STitle>
-            <div className="detail-grid">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
               <ReadOnlyField label="Email" value={m.email} />
               <EditableField label="Primary Phone" value={m.primary_phone} countryCode={m.country_code || "+65"} fieldKey="primary_phone" isPhone unlocked={!profileLocked} onSave={save} />
               <EditableField label="Secondary Phone" value={m.secondary_phone} countryCode={m.country_code || "+65"} fieldKey="secondary_phone" isPhone unlocked={!profileLocked} onSave={save} />
             </div>
 
             <STitle>Membership</STitle>
-            <div className="detail-grid">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
               <EditableField label="Tier" value={m.tier} fieldKey="tier" type="select" options={TIERS.map(t => ({ value: t, label: tierLabel(t) }))} unlocked={!profileLocked} onSave={save} />
               <EditableField label="Status" value={m.account_status} fieldKey="account_status" type="select" options={STATUSES.map(s => ({ value: s, label: tc(s) }))} unlocked={!profileLocked} onSave={save} />
               <ReadOnlyField label="Upline" value={m.upline_name ? `${m.upline_name} (${tierLabel(m.upline_tier)})` : null} />
@@ -479,7 +515,7 @@ export default function Users() {
             </div>
 
             <STitle>Eligibility</STitle>
-            <div className="detail-grid">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
               {[
                 { label: "Commission Eligible", key: "commission_eligible", val: m.commission_eligible },
                 { label: "FOC Eligible", key: "foc_eligible", val: m.foc_eligible },
