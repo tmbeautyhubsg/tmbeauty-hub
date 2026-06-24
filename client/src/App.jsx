@@ -3,6 +3,7 @@ import logo from "./logo.png"
 import Dashboard from "./Dashboard"
 import SetPassword from "./SetPassword"
 import ForgotPassword from "./ForgotPassword"
+import MembershipTiers from "./MembershipTiers"
 
 export default function App() {
   const [email, setEmail] = useState("")
@@ -20,6 +21,9 @@ export default function App() {
 
   // Route: Forgot Password
   if (window.location.pathname === "/forgot-password") return <ForgotPassword />
+
+  // Route: Membership Tiers
+  if (window.location.pathname === "/membership") return <MembershipTiers />
 
   // Route: Dashboard
   if (currentUser) {
