@@ -321,6 +321,8 @@ export default function Dashboard({ user, onLogout }) {
           .hamburger { display: none !important; }
           .mobile-topbar { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
+          .switcher-header { display: none !important; }
+          .switcher-card { grid-template-columns: 42px 1fr 120px !important; gap: 8px !important; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
