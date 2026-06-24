@@ -79,9 +79,13 @@ function FormField({ label, children, required, note }) {
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
     <div style={{ display: "flex", gap: "8px", width: "100%", boxSizing: "border-box" }}>
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "88px", flexShrink: 0 }}>
-        {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
-      </select>
+      <div style={{ width: "120px", flexShrink: 0 }}>
+        <CustomSelect
+          value={countryCode}
+          onChange={onCountryChange}
+          options={COUNTRIES.map(c => ({ value: c.code, label: c.label }))}
+        />
+      </div>
       <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={{ ...iStyle, flex: 1, minWidth: 0 }} />
     </div>
   )
