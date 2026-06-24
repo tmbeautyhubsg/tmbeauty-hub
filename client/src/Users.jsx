@@ -51,6 +51,7 @@ function statusColour(s) {
   if (s === "ghost") return { bg: "#EDE9FE", color: "#5B21B6" }
   return { bg: "#E5E7EB", color: "#374151" }
 }
+function boolDisplay(v) { return v === true || v === "true" ? "Yes" : "No" }
 function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) }
 
 function Badge({ label, bg, color }) {
@@ -338,11 +339,11 @@ export default function Users() {
         <input type="text" placeholder="Search name, email, referral code..." value={search}
           onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === "Enter" && fetchMembers()}
           style={{ ...iStyle, flex: 1, minWidth: "200px" }} />
-        <select value={filterTier} onChange={e => { setFilterTier(e.target.value); setPage(1) }} style={{ ...iStyle, width: "150px", flex: "none" }}>
+        <select value={filterTier} onChange={e => { setFilterTier(e.target.value); setPage(1) }} style={{ ...iStyle, minWidth: "130px", flex: "1 1 130px" }}>
           <option value="">All Tiers</option>
           {TIERS.map(t => <option key={t} value={t}>{tierLabel(t)}</option>)}
         </select>
-        <select value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setPage(1) }} style={{ ...iStyle, width: "160px", flex: "none" }}>
+        <select value={filterStatus} onChange={e => { setFilterStatus(e.target.value); setPage(1) }} style={{ ...iStyle, minWidth: "130px", flex: "1 1 130px" }}>
           <option value="">All Status</option>
           {STATUSES.map(s => <option key={s} value={s}>{tc(s)}</option>)}
         </select>
@@ -422,17 +423,19 @@ export default function Users() {
         const save = (f, v, n) => saveField(uid, f, v, n)
         return (
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px", paddingBottom: "24px", borderBottom: `1px solid ${GOLD_LIGHT}`, flexWrap: "wrap" }}>
-              <div style={{ width: "56px", height: "56px", borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "22px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{m.name?.charAt(0).toUpperCase()}</div>
-              <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-                <h1 style={{ fontFamily: ff, fontSize: "22px", color: BLACK, fontWeight: "700", margin: "0 0 8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{m.name}</h1>
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                  <Badge label={tierLabel(m.tier)} {...tierColour(m.tier)} />
-                  <Badge label={tc(m.account_status)} {...statusColour(m.account_status)} />
-                  {m.referral_code && <Badge label={m.referral_code} bg="#F5E6C8" color="#5C3D08" />}
+            <div style={{ marginBottom: "28px", paddingBottom: "24px", borderBottom: `1px solid ${GOLD_LIGHT}` }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "20px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{m.name?.charAt(0).toUpperCase()}</div>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <h1 style={{ fontFamily: ff, fontSize: "20px", color: BLACK, fontWeight: "700", margin: "0 0 6px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</h1>
+                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                    <Badge label={tierLabel(m.tier)} {...tierColour(m.tier)} />
+                    <Badge label={tc(m.account_status)} {...statusColour(m.account_status)} />
+                    {m.referral_code && <Badge label={m.referral_code} bg="#F5E6C8" color="#5C3D08" />}
+                  </div>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexShrink: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                 {!profileLocked && <span style={{ fontFamily: ff, fontSize: "12px", color: "#92400E", background: "#FEF3C7", padding: "6px 12px", borderRadius: "6px", fontWeight: "700" }}>Editing Mode</span>}
                 <button onClick={() => setProfileLocked(l => !l)} style={{ padding: "9px 20px", fontSize: "13px", fontFamily: ff, fontWeight: "700", cursor: "pointer", borderRadius: "8px", border: profileLocked ? "none" : `1px solid #991B1B`, background: profileLocked ? `linear-gradient(135deg, #C9A84C, ${GOLD})` : "transparent", color: profileLocked ? WHITE : "#991B1B" }}>
                   {profileLocked ? "🔓 Unlock to Edit" : "🔒 Lock Profile"}
@@ -630,7 +633,7 @@ export default function Users() {
             <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
               <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
             </FormField>
-            <FormField label="TSSB Credits">
+            <FormField label="TSSB Credits" note="Enter TSSB credit balance from manual records">
               <input type="number" value={cf.tssb_credits} onChange={e => setCf({...cf, tssb_credits: e.target.value})} placeholder="e.g. 0" style={iStyle} />
             </FormField>
           </div>

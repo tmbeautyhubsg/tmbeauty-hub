@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import logo from "./logo.png"
 import MembershipTiers from "./MembershipTiers"
-import Users from "./Users"
 
 const GOLD = "#A87C2A"
 const GOLD_LIGHT = "#D4B86A"
@@ -264,8 +263,8 @@ export default function Dashboard({ user, onLogout }) {
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
           .acc-email { display: none !important; }
           .acc-role { display: none !important; }
-          .member-name { font-size: 18px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 160px !important; }
-          select, input { max-width: 100% !important; box-sizing: border-box !important; }
+          select, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
+          .main-content > div { overflow-x: hidden; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
@@ -315,7 +314,6 @@ export default function Dashboard({ user, onLogout }) {
         {activePage === "Dashboard" && <DashboardHome user={user} />}
         {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
         {activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
-        {activePage === "Users" && <Users />}
         {!["Dashboard", "Account Switcher", "Membership Tiers", "Users"].includes(activePage) && (
           <div>
             <PageHeader sub="Module" title={activePage} />

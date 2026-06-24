@@ -57,25 +57,18 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
       chinese_name: tier.chineseName,
       english_name: tier.englishName,
     })
-    setEditNote("")
-    setEditError("")
+    setEditNote(""); setEditError("")
   }
 
   async function handleSaveEdit() {
     if (!editNote.trim()) { setEditError("Reason for change is required"); return }
     setSaving(true); setEditError("")
     try {
-      // Save each changed field
       const original = {
-        price: String(editingTier.price),
-        base_credits: String(editingTier.baseCredits),
-        foc_credits: String(editingTier.focCredits),
-        replenishment_price: String(editingTier.replenishmentPrice),
-        closing_fee: String(editingTier.closingFee),
-        upgrade_fee: editingTier.upgradeFee ? String(editingTier.upgradeFee) : "",
-        upgrade_target: editingTier.upgradeTarget || "",
-        chinese_name: editingTier.chineseName,
-        english_name: editingTier.englishName,
+        price: String(editingTier.price), base_credits: String(editingTier.baseCredits),
+        foc_credits: String(editingTier.focCredits), replenishment_price: String(editingTier.replenishmentPrice),
+        closing_fee: String(editingTier.closingFee), upgrade_fee: editingTier.upgradeFee ? String(editingTier.upgradeFee) : "",
+        upgrade_target: editingTier.upgradeTarget || "", chinese_name: editingTier.chineseName, english_name: editingTier.englishName,
       }
       const changed = Object.keys(editForm).filter(k => editForm[k] !== original[k])
       for (const field of changed) {
@@ -95,80 +88,85 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
   const handleConfirm = () => setStep("success")
   const handleClose = () => { setSelectedTier(null); setStep("confirm") }
 
-  const slStyle = { fontFamily: ff, fontSize: "11px", color: muted, marginBottom: "5px", whiteSpace: "nowrap" }
-  const svStyle = { fontFamily: ff, fontSize: "14px", fontWeight: "600", color: black, whiteSpace: "nowrap" }
-
   if (loading) return <div style={{ fontFamily: ff, textAlign: "center", padding: "3rem", color: gold }}>Loading packages...</div>
 
   return (
-    <div style={{ fontFamily: ff, background: "transparent", padding: 0 }}>
+    <div style={{ fontFamily: ff }}>
       <style>{`
-        .tier-row { display: flex; align-items: stretch; }
-        .tier-left { width: 120px; flex-shrink: 0; padding: 12px 14px; border-right: 0.5px solid #e8dcc8; display: flex; flex-direction: column; justify-content: center; }
-        .tier-mid { flex: 1; display: flex; align-items: stretch; }
-        .tier-stat { padding: 14px 8px; border-right: 0.5px solid #e8dcc8; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex: 1; }
-        .tier-stat:last-child { border-right: none; }
+        .mt-card { background: ${cardBg}; border: 0.5px solid ${lightGold}; border-top: 3px solid ${gold}; border-radius: 10px; overflow: hidden; margin-bottom: 12px; }
+        .mt-header { padding: 14px 16px; border-bottom: 0.5px solid #e8dcc8; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .mt-name-block {}
+        .mt-chinese { font-size: 11px; color: ${gold}; letter-spacing: 2px; font-family: ${ff}; }
+        .mt-english { font-size: 18px; font-weight: 700; color: ${black}; font-family: ${ff}; margin: 4px 0 0; }
+        .mt-price { font-size: 20px; font-weight: 700; color: ${gold}; font-family: ${ff}; white-space: nowrap; }
+        .mt-price-label { font-size: 10px; color: ${muted}; font-family: ${ff}; text-align: right; }
+        .mt-stats { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 0.5px solid #e8dcc8; }
+        .mt-stat { padding: 10px 8px; border-right: 0.5px solid #e8dcc8; text-align: center; }
+        .mt-stat:last-child { border-right: none; }
+        .mt-sl { font-size: 10px; color: ${muted}; font-family: ${ff}; margin-bottom: 4px; }
+        .mt-sv { font-size: 13px; font-weight: 600; color: ${black}; font-family: ${ff}; }
+        .mt-footer { padding: 12px 16px; display: flex; justify-content: flex-end; }
+        .mt-btn { padding: 9px 20px; border-radius: 8px; font-family: ${ff}; font-size: 13px; font-weight: 600; cursor: pointer; border: none; white-space: nowrap; }
+        .mt-btn-gold { background: linear-gradient(135deg, #C9A84C, ${gold}); color: #fff; }
+        .mt-btn-dark { background: #1A1A1A; color: #fff; }
         @media (max-width: 768px) {
-          .tier-row { flex-direction: column; }
-          .tier-left { width: 100%; padding: 14px 16px; border-right: none; border-bottom: 0.5px solid #e8dcc8; }
-          .tier-mid { flex-direction: column; }
-          .tier-stat { flex-direction: row; justify-content: space-between; padding: 10px 16px; border-right: none; border-bottom: 0.5px solid #e8dcc8; text-align: left; }
-          .tier-right { width: 100% !important; padding: 14px 16px !important; border-left: none !important; border-top: 0.5px solid #e8dcc8; }
-          .tier-right button { width: 100% !important; }
+          .mt-stats { grid-template-columns: repeat(2, 1fr); }
+          .mt-stat { border-bottom: 0.5px solid #e8dcc8; }
+          .mt-stat:nth-child(2n) { border-right: none; }
+          .mt-stat:nth-last-child(-n+1) { border-bottom: none; }
+          .mt-stat:nth-last-child(-n+2) { border-bottom: none; }
+          .mt-footer { justify-content: stretch; }
+          .mt-btn { width: 100%; text-align: center; }
+          select, input { max-width: 100% !important; box-sizing: border-box !important; }
         }
       `}</style>
 
       <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-        <div style={{ fontSize: "24px", fontWeight: "700", color: black, marginBottom: "4px" }}>Membership Tiers</div>
-        <div style={{ fontSize: "13px", color: muted }}>Entry package · Full payment · Stock released upon upline confirmation</div>
+        <div style={{ fontSize: "24px", fontWeight: "700", color: black, marginBottom: "4px", fontFamily: ff }}>Membership Tiers</div>
+        <div style={{ fontSize: "13px", color: muted, fontFamily: ff }}>Entry package · Full payment · Stock released upon upline confirmation</div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {tiers.map(tier => (
-          <div key={tier.id} className="tier-row" style={{ background: cardBg, border: `0.5px solid ${lightGold}`, borderTop: `3px solid ${gold}`, borderRadius: "10px", overflow: "hidden", position: "relative", minHeight: "84px" }}>
-            <div style={{ position: "absolute", bottom: "-4px", left: "100px", fontSize: "52px", color: lightGold, opacity: 0.1, fontStyle: "italic", pointerEvents: "none", userSelect: "none", lineHeight: 1, fontFamily: ff }}>{tier.chineseName}</div>
-
-            <div className="tier-left">
-              <div style={{ fontSize: "11px", color: gold, letterSpacing: "2px", fontFamily: ff }}>{tier.chineseName}</div>
-              <div style={{ fontSize: "17px", fontWeight: "700", color: black, fontFamily: ff, lineHeight: 1.2, margin: "6px 0" }}>{tier.englishName}</div>
-              <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                <div style={{ width: "20px", height: "0.5px", background: lightGold }} />
-                <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: gold, flexShrink: 0 }} />
-                <div style={{ width: "20px", height: "0.5px", background: lightGold }} />
-              </div>
+      {tiers.map(tier => (
+        <div key={tier.id} className="mt-card">
+          <div className="mt-header">
+            <div className="mt-name-block">
+              <div className="mt-chinese">{tier.chineseName}</div>
+              <div className="mt-english">{tier.englishName}</div>
             </div>
-
-            <div className="tier-mid">
-              <div className="tier-stat"><div style={slStyle}>Base credits</div><div style={svStyle}>{tier.baseCredits}</div></div>
-              <div className="tier-stat"><div style={slStyle}>FOC credits</div><div style={{ ...svStyle, color: gold }}>+{tier.focCredits}</div></div>
-              <div className="tier-stat"><div style={slStyle}>Replenishment</div><div style={svStyle}>SGD {tier.replenishmentPrice}</div></div>
-              <div className="tier-stat"><div style={slStyle}>Closing fee</div><div style={svStyle}>SGD {tier.closingFee}</div></div>
-              <div className="tier-stat"><div style={slStyle}>Upgrade fee</div><div style={svStyle}>{tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}</div></div>
-            </div>
-
-            <div className="tier-right" style={{ width: "175px", flexShrink: 0, padding: "14px 20px", borderLeft: `0.5px solid #e8dcc8`, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", gap: "4px" }}>
-              <div style={{ fontSize: "18px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff }}>SGD {tier.price.toLocaleString()}</div>
-              <div style={{ fontSize: "10px", color: muted, whiteSpace: "nowrap", fontFamily: ff, marginBottom: "8px" }}>One-time entry</div>
-              {!isSuperAdmin ? (
-                <button onClick={() => handleRequest(tier)} style={{ width: "135px", height: "36px", background: `linear-gradient(135deg, #C9A84C, ${gold})`, color: "#fff", border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>Request to Join</button>
-              ) : (
-                <button onClick={() => openEdit(tier)} style={{ width: "135px", height: "36px", background: "#1A1A1A", color: "#fff", border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "12px", fontWeight: "600", cursor: "pointer" }}>Edit Package</button>
-              )}
+            <div style={{ textAlign: "right" }}>
+              <div className="mt-price">SGD {tier.price.toLocaleString()}</div>
+              <div className="mt-price-label">One-time entry</div>
             </div>
           </div>
-        ))}
-      </div>
+
+          <div className="mt-stats">
+            <div className="mt-stat"><div className="mt-sl">Base credits</div><div className="mt-sv">{tier.baseCredits}</div></div>
+            <div className="mt-stat"><div className="mt-sl">FOC credits</div><div className="mt-sv" style={{ color: gold }}>+{tier.focCredits}</div></div>
+            <div className="mt-stat"><div className="mt-sl">Replenishment</div><div className="mt-sv">SGD {tier.replenishmentPrice}</div></div>
+            <div className="mt-stat"><div className="mt-sl">Closing fee</div><div className="mt-sv">SGD {tier.closingFee}</div></div>
+            <div className="mt-stat"><div className="mt-sl">Upgrade fee</div><div className="mt-sv">{tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}</div></div>
+          </div>
+
+          <div className="mt-footer">
+            {!isSuperAdmin ? (
+              <button className="mt-btn mt-btn-gold" onClick={() => handleRequest(tier)}>Request to Join</button>
+            ) : (
+              <button className="mt-btn mt-btn-dark" onClick={() => openEdit(tier)}>Edit Package</button>
+            )}
+          </div>
+        </div>
+      ))}
 
       {/* Member request modal */}
       {selectedTier && (
         <div onClick={handleClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "1rem" }}>
           <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "2rem 1.5rem", width: "100%", maxWidth: "420px", fontFamily: ff }}>
             {step === "no_upline" && (
-              <div style={{ textAlign: "center", padding: "1rem 0" }}>
+              <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: "32px", marginBottom: "12px" }}>🔗</div>
                 <div style={{ fontSize: "16px", fontWeight: "600", color: black, marginBottom: "8px" }}>No upline linked</div>
-                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7", marginBottom: "20px" }}>You need to be linked to an upline before requesting a package. Please contact your upline or the administrator.</div>
-                <button onClick={handleClose} style={{ padding: "10px 24px", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Close</button>
+                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7", marginBottom: "20px" }}>You need to be linked to an upline before requesting a package.</div>
+                <button onClick={handleClose} className="mt-btn" style={{ background: "transparent", border: `0.5px solid ${lightGold}`, color: muted }}>Close</button>
               </div>
             )}
             {step === "confirm" && (
@@ -192,7 +190,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
                   ))}
                 </div>
                 <div style={{ fontSize: "11px", color: muted, lineHeight: "1.6", marginBottom: "20px", padding: "10px 12px", borderLeft: `2px solid ${lightGold}`, borderRadius: "0 6px 6px 0" }}>
-                  Stock releases only after full payment is confirmed by your upline. All transactions are timestamped and recorded.
+                  Stock releases only after full payment is confirmed by your upline.
                 </div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <button onClick={handleClose} style={{ flex: 1, padding: "11px 0", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Cancel</button>
@@ -201,10 +199,10 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               </>
             )}
             {step === "success" && (
-              <div style={{ textAlign: "center", padding: "1rem 0" }}>
+              <div style={{ textAlign: "center" }}>
                 <div style={{ fontSize: "36px", marginBottom: "12px" }}>✓</div>
                 <div style={{ fontSize: "17px", fontWeight: "700", color: black, marginBottom: "8px" }}>Request sent</div>
-                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7" }}>Your request for <strong>{selectedTier.englishName}</strong> has been sent to <strong>{mockUser.uplineName}</strong>.<br /><br />You will be notified once your upline confirms payment and stock is released.</div>
+                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7" }}>Your request for <strong>{selectedTier.englishName}</strong> has been sent to <strong>{mockUser.uplineName}</strong>.<br /><br />You will be notified once payment is confirmed.</div>
                 <button onClick={handleClose} style={{ marginTop: "20px", width: "100%", padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: "pointer" }}>Done</button>
               </div>
             )}
@@ -212,46 +210,30 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
         </div>
       )}
 
-      {/* Superadmin full form edit modal */}
+      {/* Edit modal - scrollable */}
       {editingTier && (
-        <div onClick={() => setEditingTier(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "1rem", overflowY: "auto" }}>
-          <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "2rem 1.5rem", width: "100%", maxWidth: "520px", fontFamily: ff, margin: "auto" }}>
+        <div onClick={() => setEditingTier(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 1000, padding: "1rem", overflowY: "auto" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "1.5rem", width: "100%", maxWidth: "480px", fontFamily: ff, margin: "auto" }}>
             <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "4px" }}>Edit Package</div>
             <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{editingTier.chineseName} · {editingTier.englishName}</div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "14px", alignItems: "start" }}>
-              <div>
-                <label style={lStyle}>Chinese Name</label>
-                <input value={editForm.chinese_name || ""} onChange={e => setEditForm({...editForm, chinese_name: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>English Name</label>
-                <input value={editForm.english_name || ""} onChange={e => setEditForm({...editForm, english_name: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>Price (SGD)</label>
-                <input type="number" value={editForm.price || ""} onChange={e => setEditForm({...editForm, price: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>Replenishment Price (SGD)</label>
-                <input type="number" value={editForm.replenishment_price || ""} onChange={e => setEditForm({...editForm, replenishment_price: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>Base Credits</label>
-                <input type="number" value={editForm.base_credits || ""} onChange={e => setEditForm({...editForm, base_credits: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>FOC Credits</label>
-                <input type="number" value={editForm.foc_credits || ""} onChange={e => setEditForm({...editForm, foc_credits: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>Closing Fee (SGD)</label>
-                <input type="number" value={editForm.closing_fee || ""} onChange={e => setEditForm({...editForm, closing_fee: e.target.value})} style={iStyle} />
-              </div>
-              <div>
-                <label style={lStyle}>Upgrade Fee (SGD)</label>
-                <input type="number" value={editForm.upgrade_fee || ""} onChange={e => setEditForm({...editForm, upgrade_fee: e.target.value})} placeholder="Leave blank if not applicable" style={iStyle} />
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+              {[
+                { label: "Chinese Name", key: "chinese_name", type: "text" },
+                { label: "English Name", key: "english_name", type: "text" },
+                { label: "Price (SGD)", key: "price", type: "number" },
+                { label: "Replenishment (SGD)", key: "replenishment_price", type: "number" },
+                { label: "Base Credits", key: "base_credits", type: "number" },
+                { label: "FOC Credits", key: "foc_credits", type: "number" },
+                { label: "Closing Fee (SGD)", key: "closing_fee", type: "number" },
+                { label: "Upgrade Fee (SGD)", key: "upgrade_fee", type: "number" },
+              ].map(({ label, key, type }) => (
+                <div key={key}>
+                  <label style={lStyle}>{label}</label>
+                  <input type={type} value={editForm[key] || ""} onChange={e => setEditForm({...editForm, [key]: e.target.value})}
+                    placeholder={type === "number" ? "0" : ""} style={iStyle} />
+                </div>
+              ))}
               <div style={{ gridColumn: "1 / -1" }}>
                 <label style={lStyle}>Upgrade Target Tier</label>
                 <select value={editForm.upgrade_target || ""} onChange={e => setEditForm({...editForm, upgrade_target: e.target.value})} style={iStyle}>
@@ -263,20 +245,23 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               </div>
             </div>
 
-            <div style={{ marginBottom: "14px" }}>
+            <div style={{ marginBottom: "12px" }}>
               <label style={lStyle}>Reason for Change *</label>
-              <input value={editNote} onChange={e => { setEditNote(e.target.value); setEditError("") }} placeholder="e.g. Updated per China HQ instruction June 2026" style={iStyle} />
+              <input value={editNote} onChange={e => { setEditNote(e.target.value); setEditError("") }}
+                placeholder="e.g. Updated per China HQ instruction June 2026" style={iStyle} />
             </div>
 
-            {editError && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 12px" }}>{editError}</p>}
+            {editError && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 10px" }}>{editError}</p>}
 
-            <div style={{ background: "#FDF6E3", border: `0.5px solid ${lightGold}`, borderLeft: `2px solid ${gold}`, padding: "10px 12px", borderRadius: "0 6px 6px 0", marginBottom: "20px", fontSize: "11px", color: muted, lineHeight: "1.6", fontFamily: ff }}>
-              Only changed fields will be saved. Each change is logged with your name, timestamp, old value and new value. Changes cannot be undone — only corrected with a new entry.
+            <div style={{ background: "#FDF6E3", borderLeft: `2px solid ${gold}`, padding: "10px 12px", borderRadius: "0 6px 6px 0", marginBottom: "16px", fontSize: "11px", color: muted, lineHeight: "1.6" }}>
+              Only changed fields will be saved. Each change is logged with your name and timestamp. Cannot be undone.
             </div>
 
             <div style={{ display: "flex", gap: "10px" }}>
               <button onClick={() => setEditingTier(null)} style={{ flex: 1, padding: "11px 0", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Cancel</button>
-              <button onClick={handleSaveEdit} disabled={saving} style={{ flex: 2, padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: saving ? "not-allowed" : "pointer" }}>{saving ? "Saving..." : "Save Changes"}</button>
+              <button onClick={handleSaveEdit} disabled={saving} style={{ flex: 2, padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: saving ? "not-allowed" : "pointer" }}>
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
             </div>
           </div>
         </div>
