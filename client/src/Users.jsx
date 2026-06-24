@@ -51,6 +51,8 @@ function statusColour(s) {
   if (s === "ghost") return { bg: "#EDE9FE", color: "#5B21B6" }
   return { bg: "#E5E7EB", color: "#374151" }
 }
+function boolDisplay(v) { return v === true || v === "true" ? "Yes" : "No" }
+function isValidEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e) }
 
 function Badge({ label, bg, color }) {
   return <span style={{ display: "inline-block", padding: "4px 10px", background: bg, color, fontFamily: ff, fontSize: "12px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{label}</span>
@@ -60,56 +62,81 @@ function STitle({ children }) {
 }
 
 const iStyle = { width: "100%", padding: "11px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: ff, fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box", borderRadius: "4px 4px 0 0" }
+const iReadOnly = { ...iStyle, background: "#F0EDE4", color: "#8a7050", cursor: "not-allowed" }
 const lStyle = { fontFamily: ff, fontSize: "11px", color: GOLD, display: "block", marginBottom: "8px", letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700" }
 const btnG = { padding: "11px 24px", background: `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "14px", fontWeight: "700", cursor: "pointer", whiteSpace: "nowrap" }
 const btnO = { padding: "11px 24px", background: "transparent", color: GOLD, border: `1px solid ${GOLD}`, borderRadius: "8px", fontFamily: ff, fontSize: "14px", fontWeight: "700", cursor: "pointer", whiteSpace: "nowrap" }
 
-function FormField({ label, children, required }) {
+function FormField({ label, children, required, note }) {
   return (
     <div>
       <label style={lStyle}>{label}{required ? " *" : ""}</label>
       {children}
+      {note && <p style={{ fontFamily: ff, fontSize: "11px", color: "#8a7050", margin: "4px 0 0" }}>{note}</p>}
     </div>
   )
 }
 
-// Inline editable field for detail view
-function EditableField({ label, value, fieldKey, type = "text", options, unlocked, onSave }) {
+function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
+  return (
+    <div style={{ display: "flex", gap: "8px" }}>
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "120px", flex: "none" }}>
+        {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
+      </select>
+      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={iStyle} />
+    </div>
+  )
+}
+
+// Inline editable field
+function EditableField({ label, value, fieldKey, type = "text", options, unlocked, onSave, isPhone, countryCode }) {
   const [editing, setEditing] = useState(false)
   const [val, setVal] = useState(value || "")
+  const [cc, setCc] = useState(countryCode || "+65")
   const [note, setNote] = useState("")
   const [saving, setSaving] = useState(false)
+  const [err, setErr] = useState("")
 
   async function save() {
-    if (!note.trim()) { alert("Please enter a reason for change"); return }
-    setSaving(true)
-    await onSave(fieldKey, val, note)
-    setNote("")
-    setEditing(false)
-    setSaving(false)
+    if (!note.trim()) { setErr("Reason for change is required"); return }
+    setSaving(true); setErr("")
+    const saveVal = isPhone ? `${cc} ${val}` : val
+    await onSave(fieldKey, saveVal, note)
+    setNote(""); setEditing(false); setSaving(false)
   }
+
+  const displayValue = type === "select" && options
+    ? (options.find(o => (o.value || o) === value)?.label || value || "—")
+    : (value === true || value === "true") ? "Yes"
+    : (value === false || value === "false") ? "No"
+    : value || "—"
 
   return (
     <div style={{ padding: "12px 16px", background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, borderRadius: "8px", transition: "all 0.15s" }}>
       <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>{label}</p>
       {editing ? (
         <div>
-          {options ? (
+          {isPhone ? (
+            <div style={{ marginBottom: "8px" }}>
+              <PhoneInput countryCode={cc} phone={val} onCountryChange={setCc} onPhoneChange={setVal} />
+            </div>
+          ) : type === "select" && options ? (
             <select value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px" }}>
               {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
             </select>
           ) : (
             <input value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px" }} />
           )}
-          <input value={note} onChange={e => setNote(e.target.value)} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "8px" }} />
+          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px" }} />
+          {err && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 6px" }}>{err}</p>}
           <div style={{ display: "flex", gap: "8px" }}>
-            <button onClick={() => { setEditing(false); setVal(value || ""); setNote("") }} style={{ ...btnO, padding: "7px 14px", fontSize: "12px" }}>Cancel</button>
+            <button onClick={() => { setEditing(false); setVal(value || ""); setNote(""); setErr("") }} style={{ ...btnO, padding: "7px 14px", fontSize: "12px" }}>Cancel</button>
             <button onClick={save} disabled={saving} style={{ ...btnG, padding: "7px 14px", fontSize: "12px", opacity: saving ? 0.6 : 1 }}>{saving ? "Saving..." : "Save"}</button>
           </div>
         </div>
       ) : (
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px" }}>
-          <p style={{ fontFamily: ff, fontSize: "15px", color: !value || value === "—" ? "#8a7050" : BLACK, fontWeight: "600", margin: 0 }}>{value || "—"}</p>
+          <p style={{ fontFamily: ff, fontSize: "15px", color: displayValue === "—" ? "#8a7050" : BLACK, fontWeight: "600", margin: 0 }}>{displayValue}</p>
           {unlocked && (
             <button onClick={() => { setVal(value || ""); setEditing(true) }} style={{ background: "transparent", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "6px", padding: "4px 10px", cursor: "pointer", fontFamily: ff, fontSize: "11px", color: GOLD, flexShrink: 0 }}>Edit</button>
           )}
@@ -119,11 +146,18 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
   )
 }
 
-// Searchable member selector
+function ReadOnlyField({ label, value }) {
+  return (
+    <div style={{ padding: "12px 16px", background: "#FFFDF7", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
+      <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>{label}</p>
+      <p style={{ fontFamily: ff, fontSize: "15px", color: !value || value === "—" ? "#8a7050" : BLACK, fontWeight: "600", margin: 0 }}>{value || "—"}</p>
+    </div>
+  )
+}
+
 function MemberSelector({ value, onChange, placeholder, excludeId }) {
   const [search, setSearch] = useState("")
   const [results, setResults] = useState([])
-  const [selected, setSelected] = useState(value || "")
   const [selectedName, setSelectedName] = useState("")
   const [open, setOpen] = useState(false)
   const token = localStorage.getItem("token")
@@ -131,9 +165,7 @@ function MemberSelector({ value, onChange, placeholder, excludeId }) {
   async function doSearch(q) {
     if (!q || q.length < 2) { setResults([]); return }
     try {
-      const r = await fetch(`${API}/api/admin/members?search=${encodeURIComponent(q)}&limit=10`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const r = await fetch(`${API}/api/admin/members?search=${encodeURIComponent(q)}&limit=10`, { headers: { Authorization: `Bearer ${token}` } })
       const d = await r.json()
       setResults((d.members || []).filter(m => m.id !== excludeId))
     } catch(e) {}
@@ -141,17 +173,16 @@ function MemberSelector({ value, onChange, placeholder, excludeId }) {
 
   return (
     <div style={{ position: "relative" }}>
-      <input
-        value={selectedName || search}
-        onChange={e => { setSearch(e.target.value); setSelectedName(""); setSelected(""); onChange(""); doSearch(e.target.value); setOpen(true) }}
+      <input value={selectedName || search}
+        onChange={e => { setSearch(e.target.value); setSelectedName(""); onChange(""); doSearch(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
         placeholder={placeholder || "Search by name..."}
-        style={iStyle}
-      />
+        style={iStyle} />
       {open && results.length > 0 && (
-        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "0 0 8px 8px", zIndex: 100, maxHeight: "200px", overflowY: "auto" }}>
+        <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "0 0 8px 8px", zIndex: 100, maxHeight: "200px", overflowY: "auto", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
           {results.map(m => (
-            <div key={m.id} onClick={() => { setSelectedName(m.name); setSelected(m.id); onChange(m.id); setOpen(false); setSearch(""); setResults([]) }}
+            <div key={m.id}
+              onClick={() => { setSelectedName(m.name); onChange(m.id); setOpen(false); setSearch(""); setResults([]) }}
               style={{ padding: "10px 14px", cursor: "pointer", fontFamily: ff, fontSize: "14px", color: BLACK, borderBottom: `0.5px solid ${GOLD_LIGHT}` }}
               onMouseEnter={e => e.currentTarget.style.background = "#FDF6E3"}
               onMouseLeave={e => e.currentTarget.style.background = WHITE}>
@@ -161,7 +192,7 @@ function MemberSelector({ value, onChange, placeholder, excludeId }) {
           ))}
         </div>
       )}
-      {selectedName && <p style={{ fontFamily: ff, fontSize: "12px", color: GOLD, margin: "4px 0 0" }}>Selected: {selectedName} (ID: {selected})</p>}
+      {selectedName && <p style={{ fontFamily: ff, fontSize: "12px", color: GOLD, margin: "4px 0 0", fontWeight: "700" }}>✓ {selectedName} selected</p>}
     </div>
   )
 }
@@ -174,9 +205,9 @@ export default function Users() {
   const [search, setSearch] = useState("")
   const [filterTier, setFilterTier] = useState("")
   const [filterStatus, setFilterStatus] = useState("")
+  const [page, setPage] = useState(1)
   const [sortBy, setSortBy] = useState("name")
   const [sortDir, setSortDir] = useState("asc")
-  const [page, setPage] = useState(1)
   const PER_PAGE = 50
 
   const [selected, setSelected] = useState(null)
@@ -186,21 +217,24 @@ export default function Users() {
   const [packages, setPackages] = useState([])
   const [createError, setCreateError] = useState("")
   const [createSuccess, setCreateSuccess] = useState("")
+  const [saving, setSaving] = useState(false)
   const [cf, setCf] = useState({
-    name: "", email: "", tier: "manager",
+    name: "", email: "",
     country_code: "+65", primary_phone: "",
     sec_country_code: "+65", secondary_phone: "",
+    tier: "manager", package_id: "",
     upline_user_id: "", onboarding_type: "manual_historical",
-    package_id: "", payment_status: "full",
-    amount_paid: "", payment_method: "Bank Transfer",
-    payment_method_other: "", payment_reference: "",
-    payment_date: "", onboarding_date: "", onboarding_notes: "",
-    base_credits: "", foc_credits: "", internal_notes: ""
+    payment_status: "full", amount_paid: "",
+    payment_method: "Bank Transfer", payment_method_other: "",
+    payment_reference: "", payment_date: "", onboarding_date: "",
+    onboarding_notes: "", base_credits: "", foc_credits: "", internal_notes: ""
   })
-  const [saving, setSaving] = useState(false)
 
   const token = localStorage.getItem("token")
   const hdrs = { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }
+  const isPortOver = cf.onboarding_type === "manual_historical"
+  const selectedPkg = packages.find(p => p.id == cf.package_id)
+  const totalPages = Math.ceil(total / PER_PAGE) || 1
 
   useEffect(() => { fetchPkg() }, [])
   useEffect(() => { fetchMembers() }, [page, filterTier, filterStatus])
@@ -229,8 +263,7 @@ export default function Users() {
   }
 
   async function fetchDetail(id) {
-    setDetailLoading(true)
-    setProfileLocked(true)
+    setDetailLoading(true); setProfileLocked(true)
     try {
       const r = await fetch(`${API}/api/admin/members/${id}`, { headers: hdrs })
       const d = await r.json()
@@ -240,48 +273,44 @@ export default function Users() {
   }
 
   async function saveField(id, field, value, note) {
-    try {
-      await fetch(`${API}/api/admin/members/${id}`, {
-        method: "PUT", headers: hdrs,
-        body: JSON.stringify({ field, value, change_note: note })
-      })
-      await fetchDetail(id)
-    } catch(e) {}
+    await fetch(`${API}/api/admin/members/${id}`, {
+      method: "PUT", headers: hdrs,
+      body: JSON.stringify({ field, value, change_note: note })
+    })
+    await fetchDetail(id)
   }
 
   async function createMember() {
     setCreateError(""); setCreateSuccess("")
     if (!cf.name.trim()) return setCreateError("Full name is required")
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cf.email)) return setCreateError("Valid email is required")
+    if (!isValidEmail(cf.email)) return setCreateError("A valid email address is required")
     if (!cf.primary_phone.trim()) return setCreateError("Primary phone is required")
     if (cf.payment_method === "Other" && !cf.payment_method_other.trim()) return setCreateError("Please specify the payment method")
     if (cf.payment_status === "partial") {
-      const pkg = packages.find(p => p.id == cf.package_id)
-      if (pkg && parseFloat(cf.amount_paid) >= parseFloat(pkg.price)) return setCreateError("Partial payment must be less than the full package price")
       if (!cf.amount_paid) return setCreateError("Please enter the partial payment amount")
+      if (selectedPkg && parseFloat(cf.amount_paid) >= parseFloat(selectedPkg.price)) return setCreateError("Partial payment must be less than the full package price")
     }
     setSaving(true)
     try {
-      const pkg = packages.find(p => p.id == cf.package_id)
       const payload = {
-        name: cf.name, email: cf.email, tier: cf.tier, role: cf.tier,
-        country_code: cf.country_code, primary_phone: cf.primary_phone,
-        secondary_phone: cf.secondary_phone || null,
+        name: cf.name.trim(), email: cf.email.trim().toLowerCase(),
+        tier: cf.tier, role: cf.tier,
+        country_code: cf.country_code, primary_phone: cf.primary_phone.trim(),
+        secondary_phone: cf.secondary_phone.trim() || null,
         upline_user_id: cf.upline_user_id || null,
-        onboarding_type: cf.onboarding_type,
-        package_id: cf.package_id || null,
-        package_price_paid: cf.payment_status === "full" && pkg ? pkg.price : cf.amount_paid,
+        onboarding_type: cf.onboarding_type, package_id: cf.package_id || null,
+        package_price_paid: cf.payment_status === "full" && selectedPkg ? selectedPkg.price : cf.amount_paid,
         payment_reference: cf.payment_reference || null,
         onboarding_date: cf.onboarding_date || null,
         onboarding_notes: cf.onboarding_notes || null,
-        base_credits: cf.base_credits || null,
-        foc_credits: cf.foc_credits || null,
+        base_credits: isPortOver ? (cf.base_credits || null) : (selectedPkg?.base_credits || null),
+        foc_credits: isPortOver ? (cf.foc_credits || null) : (selectedPkg?.foc_credits || null),
         internal_notes: cf.internal_notes || null,
       }
       const r = await fetch(`${API}/api/admin/members`, { method: "POST", headers: hdrs, body: JSON.stringify(payload) })
       const d = await r.json()
       if (!r.ok) { setCreateError(d.error || "Failed to create member"); setSaving(false); return }
-      setCreateSuccess(`Member created successfully. Referral code: ${d.referral_code}`)
+      setCreateSuccess(`Member created. Referral code: ${d.referral_code}`)
       fetchMembers()
       setTimeout(() => { setView("list"); setCreateSuccess("") }, 3000)
     } catch(e) { setCreateError("Server error") }
@@ -293,10 +322,7 @@ export default function Users() {
     else { setSortBy(col); setSortDir("asc") }
   }
 
-  const selectedPkg = packages.find(p => p.id == cf.package_id)
-  const totalPages = Math.ceil(total / PER_PAGE) || 1
-
-  // ── LIST VIEW ──
+  // ── LIST ──
   if (view === "list") return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "28px", borderBottom: `1px solid ${GOLD_LIGHT}`, paddingBottom: "24px" }}>
@@ -323,9 +349,8 @@ export default function Users() {
         <button style={btnO} onClick={() => { setPage(1); fetchMembers() }}>Search</button>
       </div>
 
-      {loading ? (
-        <p style={{ fontFamily: ff, color: GOLD, padding: "24px" }}>Loading members...</p>
-      ) : members.length === 0 ? (
+      {loading ? <p style={{ fontFamily: ff, color: GOLD, padding: "24px" }}>Loading members...</p>
+      : members.length === 0 ? (
         <div style={{ textAlign: "center", padding: "52px", background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "12px" }}>
           <p style={{ fontFamily: ff, fontSize: "17px", color: "#999", margin: 0 }}>No members found</p>
         </div>
@@ -335,15 +360,12 @@ export default function Users() {
             <thead>
               <tr style={{ background: "#FDFAF2" }}>
                 {[
-                  { label: "Name", col: "name" },
-                  { label: "Referral Code", col: "referral_code" },
-                  { label: "Tier", col: "tier" },
-                  { label: "Status", col: "account_status" },
-                  { label: "Upline", col: "upline_name" },
-                  { label: "Date Added", col: "onboarding_date" },
+                  { label: "Name", col: "name" }, { label: "Referral Code", col: "referral_code" },
+                  { label: "Tier", col: "tier" }, { label: "Status", col: "account_status" },
+                  { label: "Upline", col: "upline_name" }, { label: "Date Added", col: "onboarding_date" },
                 ].map(({ label, col }) => (
                   <th key={col} onClick={() => handleSort(col)} style={{ padding: "12px 16px", textAlign: "left", fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", borderBottom: `2px solid ${GOLD_LIGHT}`, cursor: "pointer", whiteSpace: "nowrap", userSelect: "none" }}>
-                    {label} <span style={{ opacity: sortBy === col ? 1 : 0.3, color: sortBy === col ? GOLD : "inherit" }}>{sortBy === col ? (sortDir === "asc" ? "↑" : "↓") : "↕"}</span>
+                    {label} <span style={{ opacity: sortBy === col ? 1 : 0.3 }}>{sortBy === col ? (sortDir === "asc" ? "↑" : "↓") : "↕"}</span>
                   </th>
                 ))}
                 <th style={{ padding: "12px 16px", borderBottom: `2px solid ${GOLD_LIGHT}` }}></th>
@@ -390,135 +412,115 @@ export default function Users() {
     </div>
   )
 
-  // ── DETAIL VIEW ──
+  // ── DETAIL ──
   if (view === "detail") return (
     <div>
       <button style={{ ...btnO, marginBottom: "24px" }} onClick={() => setView("list")}>← Back to Members</button>
-      {detailLoading || !selected ? <p style={{ fontFamily: ff, color: GOLD }}>Loading...</p> : (
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px", paddingBottom: "24px", borderBottom: `1px solid ${GOLD_LIGHT}`, flexWrap: "wrap" }}>
-            <div style={{ width: "56px", height: "56px", borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "22px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{selected.member.name?.charAt(0).toUpperCase()}</div>
-            <div style={{ flex: 1 }}>
-              <h1 style={{ fontFamily: ff, fontSize: "24px", color: BLACK, fontWeight: "700", margin: "0 0 8px" }}>{selected.member.name}</h1>
-              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                <Badge label={tierLabel(selected.member.tier)} {...tierColour(selected.member.tier)} />
-                <Badge label={tc(selected.member.account_status)} {...statusColour(selected.member.account_status)} />
-                {selected.member.referral_code && <Badge label={selected.member.referral_code} bg="#F5E6C8" color="#5C3D08" />}
+      {detailLoading || !selected ? <p style={{ fontFamily: ff, color: GOLD }}>Loading...</p> : (() => {
+        const m = selected.member
+        const uid = m.user_id
+        const save = (f, v, n) => saveField(uid, f, v, n)
+        return (
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px", paddingBottom: "24px", borderBottom: `1px solid ${GOLD_LIGHT}`, flexWrap: "wrap" }}>
+              <div style={{ width: "56px", height: "56px", borderRadius: "50%", border: `2px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "22px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{m.name?.charAt(0).toUpperCase()}</div>
+              <div style={{ flex: 1 }}>
+                <h1 style={{ fontFamily: ff, fontSize: "24px", color: BLACK, fontWeight: "700", margin: "0 0 8px" }}>{m.name}</h1>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                  <Badge label={tierLabel(m.tier)} {...tierColour(m.tier)} />
+                  <Badge label={tc(m.account_status)} {...statusColour(m.account_status)} />
+                  {m.referral_code && <Badge label={m.referral_code} bg="#F5E6C8" color="#5C3D08" />}
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: "10px", alignItems: "center", flexShrink: 0 }}>
+                {!profileLocked && <span style={{ fontFamily: ff, fontSize: "12px", color: "#92400E", background: "#FEF3C7", padding: "6px 12px", borderRadius: "6px", fontWeight: "700" }}>Editing Mode</span>}
+                <button onClick={() => setProfileLocked(l => !l)} style={{ padding: "9px 20px", fontSize: "13px", fontFamily: ff, fontWeight: "700", cursor: "pointer", borderRadius: "8px", border: profileLocked ? "none" : `1px solid #991B1B`, background: profileLocked ? `linear-gradient(135deg, #C9A84C, ${GOLD})` : "transparent", color: profileLocked ? WHITE : "#991B1B" }}>
+                  {profileLocked ? "🔓 Unlock to Edit" : "🔒 Lock Profile"}
+                </button>
               </div>
             </div>
-            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-              {!profileLocked && (
-                <span style={{ fontFamily: ff, fontSize: "12px", color: "#92400E", background: "#FEF3C7", padding: "6px 12px", borderRadius: "6px", fontWeight: "700" }}>● Editing Mode</span>
-              )}
-              <button
-                onClick={() => setProfileLocked(l => !l)}
-                style={{ ...profileLocked ? btnG : { ...btnO, borderColor: "#991B1B", color: "#991B1B" }, padding: "9px 20px", fontSize: "13px" }}>
-                {profileLocked ? "🔓 Unlock to Edit" : "🔒 Lock Profile"}
-              </button>
-            </div>
-          </div>
 
-          <STitle>Contact Information</STitle>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
-            <EditableField label="Primary Phone" value={[selected.member.country_code, selected.member.primary_phone].filter(Boolean).join(" ")} fieldKey="primary_phone" unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <EditableField label="Secondary Phone" value={selected.member.secondary_phone} fieldKey="secondary_phone" unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <div style={{ padding: "12px 16px", background: "#FFFDF7", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
-              <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>Email</p>
-              <p style={{ fontFamily: ff, fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{selected.member.email}</p>
+            <STitle>Contact Information</STitle>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+              <ReadOnlyField label="Email" value={m.email} />
+              <EditableField label="Primary Phone" value={m.primary_phone} countryCode={m.country_code || "+65"} fieldKey="primary_phone" isPhone unlocked={!profileLocked} onSave={save} />
+              <EditableField label="Secondary Phone" value={m.secondary_phone} countryCode={m.country_code || "+65"} fieldKey="secondary_phone" isPhone unlocked={!profileLocked} onSave={save} />
             </div>
-          </div>
 
-          <STitle>Membership</STitle>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
-            <EditableField label="Tier" value={tierLabel(selected.member.tier)} fieldKey="tier" type="select"
-              options={TIERS.map(t => ({ value: t, label: tierLabel(t) }))}
-              unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <EditableField label="Status" value={tc(selected.member.account_status)} fieldKey="account_status" type="select"
-              options={STATUSES.map(s => ({ value: s, label: tc(s) }))}
-              unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <div style={{ padding: "12px 16px", background: "#FFFDF7", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
-              <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>Upline</p>
-              <p style={{ fontFamily: ff, fontSize: "15px", color: selected.member.upline_name ? BLACK : "#8a7050", fontWeight: "600", margin: 0 }}>{selected.member.upline_name ? `${selected.member.upline_name} (${tierLabel(selected.member.upline_tier)})` : "—"}</p>
+            <STitle>Membership</STitle>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+              <EditableField label="Tier" value={m.tier} fieldKey="tier" type="select" options={TIERS.map(t => ({ value: t, label: tierLabel(t) }))} unlocked={!profileLocked} onSave={save} />
+              <EditableField label="Status" value={m.account_status} fieldKey="account_status" type="select" options={STATUSES.map(s => ({ value: s, label: tc(s) }))} unlocked={!profileLocked} onSave={save} />
+              <ReadOnlyField label="Upline" value={m.upline_name ? `${m.upline_name} (${tierLabel(m.upline_tier)})` : null} />
+              <ReadOnlyField label="Onboarding Type" value={tc(m.onboarding_type)} />
+              <ReadOnlyField label="Date Added" value={sgtDate(m.onboarding_date)} />
+              <ReadOnlyField label="Package Paid" value={m.package_price_paid ? `SGD ${parseFloat(m.package_price_paid).toLocaleString()}` : null} />
+              <EditableField label="Payment Reference" value={m.payment_reference} fieldKey="payment_reference" unlocked={!profileLocked} onSave={save} />
+              <EditableField label="Upline Visibility Levels" value={String(m.upline_visibility_levels || 1)} fieldKey="upline_visibility_levels" unlocked={!profileLocked} onSave={save} />
             </div>
-            <EditableField label="Onboarding Type" value={tc(selected.member.onboarding_type)} fieldKey="onboarding_type" type="select"
-              options={ONBOARDING_TYPES.map(o => ({ value: o.value, label: o.label }))}
-              unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <div style={{ padding: "12px 16px", background: "#FFFDF7", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
-              <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>Date Added</p>
-              <p style={{ fontFamily: ff, fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{sgtDate(selected.member.onboarding_date)}</p>
+
+            <STitle>Eligibility</STitle>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
+              {[
+                { label: "Commission Eligible", key: "commission_eligible", val: m.commission_eligible },
+                { label: "FOC Eligible", key: "foc_eligible", val: m.foc_eligible },
+                { label: "VIP", key: "is_vip", val: m.is_vip },
+                { label: "Under Review", key: "is_under_review", val: m.is_under_review },
+              ].map(({ label, key, val }) => (
+                <EditableField key={key} label={label}
+                  value={val === true || val === "true" ? "true" : "false"}
+                  fieldKey={key} type="select"
+                  options={[{ value: "true", label: "Yes" }, { value: "false", label: "No" }]}
+                  unlocked={!profileLocked} onSave={save} />
+              ))}
             </div>
-            <div style={{ padding: "12px 16px", background: "#FFFDF7", border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
-              <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>Package Paid</p>
-              <p style={{ fontFamily: ff, fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{selected.member.package_price_paid ? `SGD ${parseFloat(selected.member.package_price_paid).toLocaleString()}` : "—"}</p>
-            </div>
-            <EditableField label="Payment Reference" value={selected.member.payment_reference} fieldKey="payment_reference"
-              unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            <EditableField label="Upline Visibility Levels" value={`${selected.member.upline_visibility_levels || 1}`} fieldKey="upline_visibility_levels"
-              unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-          </div>
 
-          <STitle>Eligibility</STitle>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "12px" }}>
-            {[
-              { label: "Commission Eligible", key: "commission_eligible", val: selected.member.commission_eligible },
-              { label: "FOC Eligible", key: "foc_eligible", val: selected.member.foc_eligible },
-              { label: "VIP", key: "is_vip", val: selected.member.is_vip },
-              { label: "Under Review", key: "is_under_review", val: selected.member.is_under_review },
-            ].map(({ label, key, val }) => (
-              <EditableField key={key} label={label} value={val ? "true" : "false"} fieldKey={key} type="select"
-                options={[{ value: "true", label: "Yes" }, { value: "false", label: "No" }]}
-                unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
-            ))}
-          </div>
+            <STitle>Internal Notes</STitle>
+            <EditableField label="Internal Notes (Superadmin Only)" value={m.internal_notes} fieldKey="internal_notes" unlocked={!profileLocked} onSave={save} />
 
-          <STitle>Internal Notes</STitle>
-          <EditableField label="Internal Notes (Superadmin Only)" value={selected.member.internal_notes} fieldKey="internal_notes"
-            unlocked={!profileLocked} onSave={(f, v, n) => saveField(selected.member.user_id, f, v, n)} />
+            {selected.downline?.length > 0 && (
+              <>
+                <STitle>Direct Downline ({selected.downline.length})</STitle>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {selected.downline.map(d => (
+                    <div key={d.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "11px 16px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
+                      <div style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1px solid ${GOLD_LIGHT}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "13px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{d.name?.charAt(0).toUpperCase()}</div>
+                      <p style={{ fontFamily: ff, fontSize: "14px", color: BLACK, fontWeight: "700", margin: 0, flex: 1 }}>{d.name}</p>
+                      <Badge label={tierLabel(d.tier)} {...tierColour(d.tier)} />
+                      <Badge label={tc(d.account_status)} {...statusColour(d.account_status)} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
 
-          {selected.downline?.length > 0 && (
-            <>
-              <STitle>Direct Downline ({selected.downline.length})</STitle>
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                {selected.downline.map(d => (
-                  <div key={d.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "11px 16px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px" }}>
-                    <div style={{ width: "32px", height: "32px", borderRadius: "50%", border: `1px solid ${GOLD_LIGHT}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: ff, fontSize: "13px", fontWeight: "700", color: GOLD, background: "#FDF6E3", flexShrink: 0 }}>{d.name?.charAt(0).toUpperCase()}</div>
-                    <p style={{ fontFamily: ff, fontSize: "14px", color: BLACK, fontWeight: "700", margin: 0, flex: 1 }}>{d.name}</p>
-                    <Badge label={tierLabel(d.tier)} {...tierColour(d.tier)} />
-                    <Badge label={tc(d.account_status)} {...statusColour(d.account_status)} />
+            <STitle>Audit Log (Singapore Time)</STitle>
+            {!selected.audit || selected.audit.length === 0 ? (
+              <div style={{ padding: "16px 20px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px", fontFamily: ff, fontSize: "14px", color: "#8a7050" }}>No changes recorded yet.</div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                {selected.audit.map(a => (
+                  <div key={a.id} style={{ display: "flex", gap: "16px", padding: "12px 16px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px", flexWrap: "wrap" }}>
+                    <div style={{ flexShrink: 0, minWidth: "190px" }}>
+                      <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: "0 0 2px" }}>{sgt(a.created_at)}</p>
+                      <p style={{ fontFamily: ff, fontSize: "12px", color: GOLD, margin: 0, fontWeight: "700" }}>{a.changed_by_name || "System"}</p>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <p style={{ fontFamily: ff, fontSize: "13px", color: BLACK, margin: "0 0 2px", fontWeight: "700" }}>{tc(a.field_changed)}</p>
+                      {a.old_value && <p style={{ fontFamily: ff, fontSize: "12px", color: "#6b5d4e", margin: "0 0 2px" }}>{a.old_value} → {a.new_value}</p>}
+                      {a.change_note && <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: 0, fontStyle: "italic" }}>{a.change_note}</p>}
+                    </div>
                   </div>
                 ))}
               </div>
-            </>
-          )}
-
-          <STitle>Audit Log (SGT)</STitle>
-          {!selected.audit || selected.audit.length === 0 ? (
-            <div style={{ padding: "16px 20px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px", fontFamily: ff, fontSize: "14px", color: "#8a7050" }}>
-              No changes recorded yet.
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              {selected.audit.map(a => (
-                <div key={a.id} style={{ display: "flex", gap: "16px", padding: "12px 16px", background: WHITE, border: `0.5px solid ${GOLD_LIGHT}`, borderRadius: "8px", flexWrap: "wrap", alignItems: "flex-start" }}>
-                  <div style={{ flexShrink: 0, minWidth: "180px" }}>
-                    <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: "0 0 2px", whiteSpace: "nowrap" }}>{sgt(a.created_at)}</p>
-                    <p style={{ fontFamily: ff, fontSize: "12px", color: GOLD, margin: 0, fontWeight: "700" }}>{a.changed_by_name || "System"}</p>
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <p style={{ fontFamily: ff, fontSize: "13px", color: BLACK, margin: "0 0 2px", fontWeight: "700" }}>{tc(a.field_changed)}</p>
-                    {a.old_value && <p style={{ fontFamily: ff, fontSize: "12px", color: "#6b5d4e", margin: "0 0 2px" }}>{a.old_value} → {a.new_value}</p>}
-                    {a.change_note && <p style={{ fontFamily: ff, fontSize: "12px", color: "#8a7050", margin: 0, fontStyle: "italic" }}>{a.change_note}</p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )
+      })()}
     </div>
   )
 
-  // ── CREATE VIEW ──
+  // ── CREATE ──
   if (view === "create") return (
     <div>
       <button style={{ ...btnO, marginBottom: "24px" }} onClick={() => setView("list")}>← Back to Members</button>
@@ -532,19 +534,19 @@ export default function Users() {
 
       <STitle>Personal Details</STitle>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "8px" }}>
-        <FormField label="Full Name" required><input value={cf.name} onChange={e => setCf({...cf, name: e.target.value})} placeholder="e.g. Sarah Tan" style={iStyle} /></FormField>
-        <FormField label="Email Address" required><input type="email" value={cf.email} onChange={e => setCf({...cf, email: e.target.value.trim().toLowerCase()})} placeholder="e.g. sarah@email.com" style={iStyle} /></FormField>
+        <FormField label="Full Name" required>
+          <input value={cf.name} onChange={e => setCf({...cf, name: e.target.value})} placeholder="e.g. Sarah Tan" style={iStyle} />
+        </FormField>
+        <FormField label="Email Address" required note="Must be a valid and unique email address">
+          <input type="email" value={cf.email} onChange={e => setCf({...cf, email: e.target.value.trim().toLowerCase()})} placeholder="e.g. sarah@email.com"
+            style={{ ...iStyle, borderBottomColor: cf.email && !isValidEmail(cf.email) ? "#E24B4A" : GOLD }} />
+          {cf.email && !isValidEmail(cf.email) && <p style={{ fontFamily: ff, fontSize: "11px", color: "#E24B4A", margin: "4px 0 0" }}>Please enter a valid email address</p>}
+        </FormField>
         <FormField label="Primary Phone" required>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <select value={cf.country_code} onChange={e => setCf({...cf, country_code: e.target.value})} style={{ ...iStyle, width: "120px", flex: "none" }}>{COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}</select>
-            <input value={cf.primary_phone} onChange={e => setCf({...cf, primary_phone: e.target.value})} placeholder="XXXX XXXX" style={iStyle} />
-          </div>
+          <PhoneInput countryCode={cf.country_code} phone={cf.primary_phone} onCountryChange={v => setCf({...cf, country_code: v})} onPhoneChange={v => setCf({...cf, primary_phone: v})} />
         </FormField>
         <FormField label="Secondary Phone">
-          <div style={{ display: "flex", gap: "8px" }}>
-            <select value={cf.sec_country_code} onChange={e => setCf({...cf, sec_country_code: e.target.value})} style={{ ...iStyle, width: "120px", flex: "none" }}>{COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}</select>
-            <input value={cf.secondary_phone} onChange={e => setCf({...cf, secondary_phone: e.target.value})} placeholder="Optional" style={iStyle} />
-          </div>
+          <PhoneInput countryCode={cf.sec_country_code} phone={cf.secondary_phone} onCountryChange={v => setCf({...cf, sec_country_code: v})} onPhoneChange={v => setCf({...cf, secondary_phone: v})} placeholder="Optional" />
         </FormField>
       </div>
 
@@ -562,7 +564,7 @@ export default function Users() {
           </select>
         </FormField>
         <FormField label="Upline Member">
-          <MemberSelector value={cf.upline_user_id} onChange={v => setCf({...cf, upline_user_id: v})} placeholder="Search upline by name..." />
+          <MemberSelector value={cf.upline_user_id} onChange={v => setCf({...cf, upline_user_id: v})} placeholder="Search by name (minimum 2 characters)..." />
         </FormField>
         <FormField label="Onboarding Type">
           <select value={cf.onboarding_type} onChange={e => setCf({...cf, onboarding_type: e.target.value})} style={iStyle}>
@@ -589,7 +591,7 @@ export default function Users() {
         </FormField>
         <FormField label={cf.payment_status === "full" ? "Amount Paid (SGD)" : "First Instalment (SGD)"}>
           {cf.payment_status === "full"
-            ? <input value={selectedPkg ? `SGD ${parseFloat(selectedPkg.price).toLocaleString()}` : "Select a package first"} readOnly style={{ ...iStyle, background: "#F0EDE4", color: "#8a7050", cursor: "not-allowed" }} />
+            ? <input value={selectedPkg ? `SGD ${parseFloat(selectedPkg.price).toLocaleString()}` : "Select a package first"} readOnly style={iReadOnly} />
             : <input type="number" value={cf.amount_paid} onChange={e => setCf({...cf, amount_paid: e.target.value})} placeholder={`Less than SGD ${selectedPkg ? parseFloat(selectedPkg.price).toLocaleString() : "package total"}`} style={iStyle} />
           }
         </FormField>
@@ -599,31 +601,53 @@ export default function Users() {
           </select>
         </FormField>
         {cf.payment_method === "Other" && (
-          <FormField label="Specify Payment Method">
-            <input value={cf.payment_method_other} maxLength={50} onChange={e => setCf({...cf, payment_method_other: e.target.value})} placeholder="Max 50 characters" style={iStyle} />
-            <p style={{ fontFamily: ff, fontSize: "11px", color: "#8a7050", margin: "4px 0 0", textAlign: "right" }}>{cf.payment_method_other.length}/50</p>
+          <FormField label="Specify Payment Method" note={`${cf.payment_method_other.length}/50 characters`}>
+            <input value={cf.payment_method_other} maxLength={50} onChange={e => setCf({...cf, payment_method_other: e.target.value})} placeholder="Describe the payment method" style={iStyle} />
           </FormField>
         )}
-        <FormField label="Payment Reference"><input value={cf.payment_reference} onChange={e => setCf({...cf, payment_reference: e.target.value})} placeholder="e.g. Bank transfer ref / receipt no." style={iStyle} /></FormField>
-        <FormField label="Payment Date"><input type="date" value={cf.payment_date} onChange={e => setCf({...cf, payment_date: e.target.value})} style={iStyle} /></FormField>
+        <FormField label="Payment Reference">
+          <input value={cf.payment_reference} onChange={e => setCf({...cf, payment_reference: e.target.value})} placeholder="e.g. Bank transfer ref / receipt no." style={iStyle} />
+        </FormField>
+        <FormField label="Payment Date">
+          <input type="date" value={cf.payment_date} onChange={e => setCf({...cf, payment_date: e.target.value})} style={iStyle} />
+        </FormField>
       </div>
 
       {cf.payment_status === "partial" && (
         <div style={{ background: "#FEF3C7", border: "1px solid #FCD34D", borderRadius: "8px", padding: "12px 16px", marginBottom: "16px", fontFamily: ff, fontSize: "13px", color: "#92400E" }}>
-          Partial payment recorded. Stock will NOT be released until full payment is confirmed. Additional instalments can be added from the member profile after creation.
+          Partial payment recorded. Stock will NOT be released until full payment is confirmed. Additional instalments can be logged from the member profile after creation.
         </div>
       )}
 
-      <STitle>Opening Credits (Historical Port-Over)</STitle>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "8px" }}>
-        <FormField label="Base Credits"><input type="number" value={cf.base_credits} onChange={e => setCf({...cf, base_credits: e.target.value})} placeholder={selectedPkg?.base_credits || "e.g. 10"} style={iStyle} /></FormField>
-        <FormField label="FOC Credits"><input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} /></FormField>
-      </div>
+      {isPortOver && (
+        <>
+          <STitle>Opening Credits (Port-Over Only)</STitle>
+          <p style={{ fontFamily: ff, fontSize: "13px", color: "#8a7050", margin: "-0.5rem 0 1rem" }}>Only applicable for members being ported over from manual records. For new members, credits are automatically assigned from the selected package.</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "8px" }}>
+            <FormField label="Base Credits" note={selectedPkg ? `Package default: ${selectedPkg.base_credits}` : ""}>
+              <input type="number" value={cf.base_credits} onChange={e => setCf({...cf, base_credits: e.target.value})} placeholder={selectedPkg?.base_credits || "e.g. 10"} style={iStyle} />
+            </FormField>
+            <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
+              <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
+            </FormField>
+          </div>
+        </>
+      )}
+
+      {!isPortOver && selectedPkg && (
+        <div style={{ background: "#D4EDD4", border: "0.5px solid #86EFAC", borderRadius: "8px", padding: "12px 16px", margin: "16px 0", fontFamily: ff, fontSize: "13px", color: "#0A3D0A" }}>
+          Credits will be automatically assigned from the selected package: <strong>{selectedPkg.base_credits} base credits + {selectedPkg.foc_credits} FOC credits</strong>
+        </div>
+      )}
 
       <STitle>Notes</STitle>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "28px" }}>
-        <FormField label="Onboarding Notes"><textarea value={cf.onboarding_notes} onChange={e => setCf({...cf, onboarding_notes: e.target.value})} placeholder="e.g. Ported over from manual records June 2026" rows={3} style={{ ...iStyle, resize: "vertical" }} /></FormField>
-        <FormField label="Internal Notes (Superadmin Only)"><textarea value={cf.internal_notes} onChange={e => setCf({...cf, internal_notes: e.target.value})} placeholder="e.g. Referred by Raymond Low" rows={3} style={{ ...iStyle, resize: "vertical" }} /></FormField>
+        <FormField label="Onboarding Notes">
+          <textarea value={cf.onboarding_notes} onChange={e => setCf({...cf, onboarding_notes: e.target.value})} placeholder={isPortOver ? "e.g. Ported over from manual records June 2026" : "e.g. New member onboarded via invitation"} rows={3} style={{ ...iStyle, resize: "vertical" }} />
+        </FormField>
+        <FormField label="Internal Notes (Superadmin Only)">
+          <textarea value={cf.internal_notes} onChange={e => setCf({...cf, internal_notes: e.target.value})} placeholder="e.g. Referred by Raymond Low" rows={3} style={{ ...iStyle, resize: "vertical" }} />
+        </FormField>
       </div>
 
       <div style={{ display: "flex", gap: "12px" }}>
