@@ -79,11 +79,11 @@ function FormField({ label, children, required, note }) {
 
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
-    <div style={{ display: "flex", gap: "8px", width: "100%", boxSizing: "border-box" }}>
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "88px", minWidth: "88px", flex: "none" }}>
+    <div className="ef-phone">
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} className="ef-cc ef-select" style={{ ...iStyle, width: "88px" }}>
         {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
       </select>
-      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={{ ...iStyle, flex: 1, minWidth: 0 }} />
+      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} className="ef-num ef-input" style={{ ...iStyle }} />
     </div>
   )
 }
@@ -112,7 +112,7 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
     : value || "—"
 
   return (
-    <div style={{ padding: "12px 16px", background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, borderRadius: "8px", transition: "all 0.15s", overflow: "hidden", boxSizing: "border-box" }}>
+    <div className="ef-wrap" style={{ background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, transition: "all 0.15s" }}>
       <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>{label}</p>
       {editing ? (
         <div>
@@ -121,13 +121,13 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
               <PhoneInput countryCode={cc} phone={val} onCountryChange={setCc} onPhoneChange={setVal} />
             </div>
           ) : type === "select" && options ? (
-            <select value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px", width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
+            <select value={val} onChange={e => setVal(e.target.value)} className="ef-select" style={{ ...iStyle, marginBottom: "8px" }}>
               {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
             </select>
           ) : (
-            <input value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px", width: "100%", boxSizing: "border-box" }} />
+            <input value={val} onChange={e => setVal(e.target.value)} className="ef-input" style={{ ...iStyle, marginBottom: "8px" }} />
           )}
-          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px", width: "100%", boxSizing: "border-box" }} />
+          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" className="ef-input" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px" }} />
           {err && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 6px" }}>{err}</p>}
           <div style={{ display: "flex", gap: "8px" }}>
             <button onClick={() => { setEditing(false); setVal(value || ""); setNote(""); setErr("") }} style={{ ...btnO, padding: "7px 14px", fontSize: "12px" }}>Cancel</button>
@@ -416,6 +416,20 @@ export default function Users() {
   // ── DETAIL ──
   if (view === "detail") return (
     <div>
+      <style>{`
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .ef-wrap { padding: 12px 16px; border-radius: 8px; box-sizing: border-box; overflow: hidden; width: 100%; }
+        .ef-select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; }
+        .ef-input { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; display: block !important; }
+        .ef-phone { display: flex; gap: 8px; width: 100%; box-sizing: border-box; }
+        .ef-cc { width: 88px !important; min-width: 0 !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
+        .ef-num { flex: 1 !important; min-width: 0 !important; box-sizing: border-box !important; }
+        @media (max-width: 768px) {
+          .detail-grid { grid-template-columns: 1fr !important; }
+          .ef-select { font-size: 16px !important; }
+          .ef-input { font-size: 16px !important; }
+        }
+      `}</style>
       <button style={{ ...btnO, marginBottom: "24px" }} onClick={() => setView("list")}>← Back to Members</button>
       {detailLoading || !selected ? <p style={{ fontFamily: ff, color: GOLD }}>Loading...</p> : (() => {
         const m = selected.member
