@@ -246,25 +246,24 @@ function AccountSwitcher({ currentUser }) {
             const rc = roleColour(acc.role)
             const isCurrent = acc.id === currentUser.id
             return (
-              <div key={acc.id} style={{ padding: "16px 20px", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
-  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-    <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
-      <div style={{ width: "42px", height: "42px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
-      <div style={{ minWidth: 0, flex: 1 }}>
-        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "700", margin: "0 0 2px" }}>{acc.name}</p>
-        <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, wordBreak: "break-all" }}>{acc.email}</p>
-      </div>
-    </div>
-    <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-      <span style={{ padding: "7px 12px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
-      {isCurrent ? (
-        <span style={{ padding: "7px 12px", fontSize: "12px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "6px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap" }}>✓ Signed in</span>
-      ) : (
-        <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 16px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "12px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>{switching === acc.id ? "..." : "Switch"}</button>
-      )}
-    </div>
-  </div>
-</div>
+              <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "16px 20px", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
+                  <div style={{ width: "42px", height: "42px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "700", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.email}</p>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+                  <span style={{ padding: "7px 16px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
+                  <div style={{ width: "0.5px", height: "28px", background: GOLD_LIGHT }} />
+                  {isCurrent ? (
+                    <span style={{ padding: "7px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "6px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap" }}>✓ Signed in</span>
+                  ) : (
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>{switching === acc.id ? "Switching..." : "Switch"}</button>
+                  )}
+                </div>
+              </div>
             )
           })}
         </div>
@@ -308,6 +307,7 @@ export default function Dashboard({ user, onLogout }) {
           .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
           .mobile-topbar { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
+          .hide-mobile { display: none !important; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
