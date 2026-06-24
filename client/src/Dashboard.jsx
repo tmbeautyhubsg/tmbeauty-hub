@@ -159,11 +159,11 @@ function AccountSwitcher({ currentUser }) {
 
   const roleLabel = r => r.replace(/_/g, " ").toUpperCase()
   const roleColour = r => {
-    if (r === "superadmin") return { bg: "#FDF6E3", color: "#7A5C10" }
-    if (r === "branch_office") return { bg: "#EEF4FB", color: "#1A3A5C" }
-    if (r === "ceo") return { bg: "#EEF8EE", color: "#1A5C1A" }
-    if (r === "director") return { bg: "#F8EEF6", color: "#5C1A4A" }
-    return { bg: "#F5F5F5", color: "#333" }
+    if (r === "superadmin") return { bg: "#F5E6C8", color: "#5C3D08" }
+    if (r === "branch_office") return { bg: "#D6E8F7", color: "#0C2E52" }
+    if (r === "ceo") return { bg: "#D4EDD4", color: "#0A3D0A" }
+    if (r === "director") return { bg: "#EDD4EA", color: "#3D0A38" }
+    return { bg: "#E8E8E8", color: "#1A1A1A" }
   }
   const filtered = accounts.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -219,7 +219,7 @@ function AccountSwitcher({ currentUser }) {
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
       ) : (
         <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, overflowX: "auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "14px 24px", borderBottom: `1px solid ${GOLD_LIGHT}`, background: "#FDFAF2", minWidth: "500px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "14px 24px", borderBottom: `1px solid ${GOLD_LIGHT}`, background: "#FDFAF2", minWidth: "500px" }}>
             {["Name", "Email", "Role", "Action"].map(h => (
               <p key={h} style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", margin: 0 }}>{h}</p>
             ))}
@@ -233,17 +233,35 @@ function AccountSwitcher({ currentUser }) {
               const rc = roleColour(acc.role)
               const isCurrent = acc.id === currentUser.id
               return (
-                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1fr", padding: "16px 24px", borderBottom: i < filtered.length - 1 ? `1px solid #F0E8CC` : "none", alignItems: "center", background: isCurrent ? "#FDFAF2" : WHITE, minWidth: "500px" }}>
+                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "16px 24px", borderBottom: i < filtered.length - 1 ? `1px solid #F0E8CC` : "none", alignItems: "center", background: isCurrent ? "#FDFAF2" : WHITE, minWidth: "500px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div style={{ width: "38px", height: "38px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: "700", color: GOLD, flexShrink: 0 }}>{acc.name.charAt(0).toUpperCase()}</div>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
                   </div>
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#555", margin: 0 }}>{acc.email}</p>
-                  <span style={{ display: "inline-block", padding: "4px 10px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "10px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
+                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, margin: 0 }}>{acc.email}</p>
+                  <span style={{ display: "inline-block", padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
                     <div style={{ display: "inline-block", padding: "10px 20px", background: "#FDF6E3", border: `1px solid ${GOLD}`, borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", color: GOLD, fontWeight: "700", letterSpacing: "1px", textAlign: "center" }}>You</div>
                   ) : (
-                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "10px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "1px", cursor: switching === acc.id ? "not-allowed" : "pointer", boxShadow: "0 4px 12px rgba(168,124,42,0.3)" }}>{switching === acc.id ? "Switching..." : "Switch"}</button>
+                    <button
+                      onClick={() => switchTo(acc)}
+                      disabled={switching === acc.id}
+                      style={{
+                        padding: "12px 28px",
+                        background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 60%, #8B6520 100%)`,
+                        color: WHITE,
+                        border: "none",
+                        borderRadius: "8px",
+                        fontFamily: "'Playfair Display', serif",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        letterSpacing: "2px",
+                        cursor: switching === acc.id ? "not-allowed" : "pointer",
+                        boxShadow: switching === acc.id ? "none" : "0 4px 16px rgba(168,124,42,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
+                        transition: "all 0.2s",
+                        minWidth: "110px",
+                      }}
+                    >{switching === acc.id ? "Switching..." : "Switch Account"}</button>
                   )}
                 </div>
               )
