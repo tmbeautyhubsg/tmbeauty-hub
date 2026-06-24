@@ -100,7 +100,7 @@ function AccountSwitcher({ currentUser }) {
   const [switching, setSwitching] = useState(null)
   const [search, setSearch] = useState("")
   const [showCreate, setShowCreate] = useState(false)
-  const [form, setForm] = useState({ name: "", email: "", password: "", role: "manager" })
+  const [form, setForm] = useState({ name: "", email: "", role: "manager" })
   const [creating, setCreating] = useState(false)
   const [createError, setCreateError] = useState("")
 
@@ -257,11 +257,7 @@ if (form.password && form.password.length < 8) { setCreateError("Password must b
       : `2px solid ${GOLD}`
   }}
 />
-            </div>
-            <div>
-              <label style={labelStyle}>Password</label>
-              <input type="password" placeholder="Min 8 characters" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} style={inputStyle} />
-            </div>
+            </div>        
             <div>
               <label style={labelStyle}>Role</label>
               <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inputStyle}>
