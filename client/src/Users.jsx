@@ -444,14 +444,14 @@ export default function Users() {
             </div>
 
             <STitle>Contact Information</STitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+            <div className="detail-grid">
               <ReadOnlyField label="Email" value={m.email} />
               <EditableField label="Primary Phone" value={m.primary_phone} countryCode={m.country_code || "+65"} fieldKey="primary_phone" isPhone unlocked={!profileLocked} onSave={save} />
               <EditableField label="Secondary Phone" value={m.secondary_phone} countryCode={m.country_code || "+65"} fieldKey="secondary_phone" isPhone unlocked={!profileLocked} onSave={save} />
             </div>
 
             <STitle>Membership</STitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "12px" }}>
+            <div className="detail-grid">
               <EditableField label="Tier" value={m.tier} fieldKey="tier" type="select" options={TIERS.map(t => ({ value: t, label: tierLabel(t) }))} unlocked={!profileLocked} onSave={save} />
               <EditableField label="Status" value={m.account_status} fieldKey="account_status" type="select" options={STATUSES.map(s => ({ value: s, label: tc(s) }))} unlocked={!profileLocked} onSave={save} />
               <ReadOnlyField label="Upline" value={m.upline_name ? `${m.upline_name} (${tierLabel(m.upline_tier)})` : null} />
@@ -463,7 +463,7 @@ export default function Users() {
             </div>
 
             <STitle>Eligibility</STitle>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px" }}>
+            <div className="detail-grid">
               {[
                 { label: "Commission Eligible", key: "commission_eligible", val: m.commission_eligible },
                 { label: "FOC Eligible", key: "foc_eligible", val: m.foc_eligible },

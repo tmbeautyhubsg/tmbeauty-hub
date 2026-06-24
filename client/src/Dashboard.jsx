@@ -266,6 +266,8 @@ export default function Dashboard({ user, onLogout }) {
           .acc-role { display: none !important; }
           select, input, textarea { max-width: 100% !important; box-sizing: border-box !important; }
           .main-content > div { overflow-x: hidden; }
+          .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+          @media (max-width: 600px) { .detail-grid { grid-template-columns: 1fr !important; } }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
