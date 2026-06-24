@@ -288,8 +288,9 @@ export default function Dashboard({ user, onLogout }) {
           .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; position: fixed !important; z-index: 200; height: 100vh; top: 0; left: 0; }
           .sidebar.open { transform: translateX(0); }
           .sidebar-backdrop { display: block !important; }
-          .main-content { margin-left: 0 !important; padding: 64px 16px 20px !important; }
-          .hamburger { display: flex !important; }
+          .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
+          .hamburger { display: none !important; }
+          .mobile-topbar { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
         }
         @media (min-width: 769px) {
@@ -311,10 +312,10 @@ export default function Dashboard({ user, onLogout }) {
       <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} style={{ display: "none", position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 199, marginTop: topOffset }} />
 
       {/* Hamburger button */}
-      <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", position: "fixed", top: topOffset + 12, left: 12, zIndex: 300, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "10px 12px", cursor: "pointer", flexDirection: "column", gap: "5px", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
-        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
-        <div style={{ width: "20px", height: "1.5px", background: GOLD }} />
+      <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", position: "fixed", top: topOffset + 10, left: 10, zIndex: 300, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "8px 10px", cursor: "pointer", flexDirection: "column", gap: "4px", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", pointerEvents: "auto" }}>
+        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
+        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
+        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
       </button>
 
       {/* Sidebar */}
@@ -343,8 +344,15 @@ export default function Dashboard({ user, onLogout }) {
 
       {/* Main content */}
       <div className="main-content" style={{ flex: 1, padding: "48px 56px", marginTop: topOffset, overflowY: "auto", marginLeft: 0 }}>
-        {/* Mobile page title bar */}
-        <div style={{ display: "none" }} className="mobile-header" />
+        {/* Mobile top bar */}
+        <div className="mobile-topbar" style={{ display: "none", alignItems: "center", gap: "12px", marginBottom: "20px", paddingBottom: "16px", borderBottom: `1px solid ${GOLD_LIGHT}` }}>
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "8px 10px", cursor: "pointer", display: "flex", flexDirection: "column", gap: "4px", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", flexShrink: 0 }}>
+            <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
+            <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
+            <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
+          </button>
+          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: BLACK }}>{activePage}</span>
+        </div>
 
         {activePage === "Dashboard" && <DashboardHome user={user} />}
         {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
