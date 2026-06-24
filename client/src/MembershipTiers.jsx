@@ -1,55 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const TIERS = [
-  {
-    id: "manager",
-    chineseName: "代颜人",
-    englishName: "Manager",
-    price: 2268,
-    baseCredits: 10,
-    focCredits: 10,
-    replenishmentPrice: 189,
-    closingFee: 100,
-    upgradeFee: 100,
-    upgradeTarget: "Director",
-  },
-  {
-    id: "director",
-    chineseName: "团长",
-    englishName: "Director",
-    price: 4168,
-    baseCredits: 20,
-    focCredits: 20,
-    replenishmentPrice: 159,
-    closingFee: 170,
-    upgradeFee: 260,
-    upgradeTarget: "CEO",
-  },
-  {
-    id: "ceo",
-    chineseName: "服务商",
-    englishName: "CEO",
-    price: 14868,
-    baseCredits: 100,
-    focCredits: 100,
-    replenishmentPrice: 119,
-    closingFee: 350,
-    upgradeFee: 500,
-    upgradeTarget: "Branch Office",
-  },
-  {
-    id: "branch_office",
-    chineseName: "事业部",
-    englishName: "Branch Office",
-    price: 47068,
-    baseCredits: 400,
-    focCredits: 300,
-    replenishmentPrice: 89,
-    closingFee: 650,
-    upgradeFee: null,
-    upgradeTarget: null,
-  },
-];
+const API = "https://tmbeauty-hub-production.up.railway.app";
 
 const gold = "#A87C2A";
 const lightGold = "#D4B86A";
@@ -64,8 +15,71 @@ const mockUser = {
 };
 
 export default function MembershipTiers({ isSuperAdmin = false }) {
+  const [tiers, setTiers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState(null);
   const [step, setStep] = useState("confirm");
+  const [editingTier, setEditingTier] = useState(null);
+  const [editField, setEditField] = useState("");
+  const [editValue, setEditValue] = useState("");
+  const [editNote, setEditNote] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch(`${API}/api/packages`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        const mapped = (data.packages || []).map(p => ({
+          id: p.tier_id,
+          dbId: p.id,
+          chineseName: p.chinese_name,
+          englishName: p.english_name,
+          price: parseFloat(p.price),
+          baseCredits: p.base_credits,
+          focCredits: p.foc_credits,
+          replenishmentPrice: parseFloat(p.replenishment_price),
+          closingFee: parseFloat(p.closing_fee),
+          upgradeFee: p.upgrade_fee ? parseFloat(p.upgrade_fee) : null,
+          upgradeTarget: p.upgrade_target,
+        }));
+        setTiers(mapped);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  async function handleSaveEdit() {
+    if (!editingTier || !editField) return;
+    setSaving(true);
+    try {
+      await fetch(`${API}/api/admin/packages/${editingTier.dbId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ field: editField, value: editValue, change_note: editNote })
+      });
+      const r = await fetch(`${API}/api/packages`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+      });
+      const data = await r.json();
+      const mapped = (data.packages || []).map(p => ({
+        id: p.tier_id, dbId: p.id,
+        chineseName: p.chinese_name, englishName: p.english_name,
+        price: parseFloat(p.price), baseCredits: p.base_credits,
+        focCredits: p.foc_credits, replenishmentPrice: parseFloat(p.replenishment_price),
+        closingFee: parseFloat(p.closing_fee),
+        upgradeFee: p.upgrade_fee ? parseFloat(p.upgrade_fee) : null,
+        upgradeTarget: p.upgrade_target,
+      }));
+      setTiers(mapped);
+      setEditingTier(null); setEditField(""); setEditValue(""); setEditNote("");
+    } catch(e) { console.error(e); }
+    setSaving(false);
+  }
 
   const handleRequest = (tier) => {
     setSelectedTier(tier);
@@ -110,6 +124,12 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
     alignItems: "center",
   };
 
+  if (loading) return (
+    <div style={{ fontFamily: ff, textAlign: "center", padding: "3rem", color: "#A87C2A" }}>
+      Loading packages...
+    </div>
+  );
+
   return (
     <div style={{ fontFamily: ff, background: "transparent", padding: 0 }}>
 
@@ -123,7 +143,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-        {TIERS.map((tier) => (
+        {tiers.map((tier) => (
           <div key={tier.id} style={{
             display: "flex",
             alignItems: "stretch",
@@ -236,11 +256,11 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
                 >Request to Join</button>
               ) : (
                 <button
-                  onClick={() => alert(`Edit ${tier.englishName}`)}
+                  onClick={() => { setEditingTier(tier); setEditField("price"); setEditValue(String(tier.price)); setEditNote(""); }}
                   style={{
                     width: "135px",
                     height: "36px",
-                    background: "#666",
+                    background: "#555",
                     color: "#fff",
                     border: "none",
                     borderRadius: "8px",
@@ -339,6 +359,50 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
               </div>
             )}
 
+          </div>
+        </div>
+      )}
+
+      {/* Superadmin Edit Modal */}
+      {editingTier && (
+        <div onClick={() => setEditingTier(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "1rem" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: cardBg, border: `1px solid ${lightGold}`, borderTop: `4px solid ${gold}`, borderRadius: "12px", padding: "2rem 1.5rem", width: "100%", maxWidth: "460px", fontFamily: ff }}>
+            <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "4px" }}>Edit Package</div>
+            <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{editingTier.chineseName} · {editingTier.englishName}</div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <label style={{ fontSize: "11px", color: gold, letterSpacing: "2px", display: "block", marginBottom: "6px" }}>FIELD</label>
+              <select value={editField} onChange={e => { setEditField(e.target.value); const fieldMap = { price: editingTier.price, base_credits: editingTier.baseCredits, foc_credits: editingTier.focCredits, replenishment_price: editingTier.replenishmentPrice, closing_fee: editingTier.closingFee, upgrade_fee: editingTier.upgradeFee || "", upgrade_target: editingTier.upgradeTarget || "", chinese_name: editingTier.chineseName, english_name: editingTier.englishName }; setEditValue(String(fieldMap[e.target.value] || "")); }} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${lightGold}`, borderBottom: `2px solid ${gold}`, background: "#FDFAF2", fontFamily: ff, fontSize: "14px", color: black, outline: "none" }}>
+                <option value="price">Price (SGD)</option>
+                <option value="base_credits">Base Credits</option>
+                <option value="foc_credits">FOC Credits</option>
+                <option value="replenishment_price">Replenishment Price</option>
+                <option value="closing_fee">Closing Fee</option>
+                <option value="upgrade_fee">Upgrade Fee</option>
+                <option value="upgrade_target">Upgrade Target</option>
+                <option value="chinese_name">Chinese Name</option>
+                <option value="english_name">English Name</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <label style={{ fontSize: "11px", color: gold, letterSpacing: "2px", display: "block", marginBottom: "6px" }}>NEW VALUE</label>
+              <input value={editValue} onChange={e => setEditValue(e.target.value)} style={{ width: "100%", padding: "10px 12px", border: `1px solid ${lightGold}`, borderBottom: `2px solid ${gold}`, background: "#FDFAF2", fontFamily: ff, fontSize: "14px", color: black, outline: "none", boxSizing: "border-box" }} />
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label style={{ fontSize: "11px", color: gold, letterSpacing: "2px", display: "block", marginBottom: "6px" }}>REASON FOR CHANGE</label>
+              <input value={editNote} onChange={e => setEditNote(e.target.value)} placeholder="e.g. Updated per China HQ instruction June 2026" style={{ width: "100%", padding: "10px 12px", border: `1px solid ${lightGold}`, borderBottom: `2px solid ${gold}`, background: "#FDFAF2", fontFamily: ff, fontSize: "14px", color: black, outline: "none", boxSizing: "border-box" }} />
+            </div>
+
+            <div style={{ background: "#FDF6E3", border: `0.5px solid ${lightGold}`, borderLeft: `2px solid ${gold}`, padding: "10px 12px", borderRadius: "0 6px 6px 0", marginBottom: "20px", fontSize: "11px", color: muted, lineHeight: "1.6" }}>
+              This change will be logged with your name, timestamp, old value and new value. It cannot be undone — only corrected with a new entry.
+            </div>
+
+            <div style={{ display: "flex", gap: "10px" }}>
+              <button onClick={() => setEditingTier(null)} style={{ flex: 1, padding: "11px 0", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Cancel</button>
+              <button onClick={handleSaveEdit} disabled={saving} style={{ flex: 2, padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: saving ? "not-allowed" : "pointer" }}>{saving ? "Saving..." : "Save Change"}</button>
+            </div>
           </div>
         </div>
       )}
