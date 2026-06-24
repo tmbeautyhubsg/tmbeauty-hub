@@ -201,28 +201,27 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
             {/* Right — price + button */}
             <div style={{
-              width: "155px",
+              width: "175px",
               flexShrink: 0,
-              padding: "12px 16px",
+              padding: "14px 20px",
               borderLeft: `0.5px solid #e8dcc8`,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
+              alignItems: "flex-start",
               gap: "4px",
             }}>
-              <div style={{ fontSize: "17px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff, height: "28px", display: "flex", alignItems: "center" }}>
+              <div style={{ fontSize: "18px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff }}>
                 SGD {tier.price.toLocaleString()}
               </div>
-              <div style={{ fontSize: "10px", color: muted, whiteSpace: "nowrap", fontFamily: ff, height: "16px", display: "flex", alignItems: "center" }}>
+              <div style={{ fontSize: "10px", color: muted, whiteSpace: "nowrap", fontFamily: ff, marginBottom: "8px" }}>
                 One-time entry
               </div>
               {!isSuperAdmin ? (
                 <button
                   onClick={() => handleRequest(tier)}
                   style={{
-                    marginTop: "6px",
-                    width: "100%",
+                    width: "135px",
                     height: "36px",
                     background: "linear-gradient(135deg, #C9A84C, #A87C2A)",
                     color: "#fff",
@@ -239,8 +238,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
                 <button
                   onClick={() => alert(`Edit ${tier.englishName}`)}
                   style={{
-                    marginTop: "6px",
-                    width: "100%",
+                    width: "135px",
                     height: "36px",
                     background: "#666",
                     color: "#fff",
