@@ -165,6 +165,7 @@ function AccountSwitcher({ currentUser }) {
     if (r === "manager") return "Manager"
     return r.replace(/_/g, " ")
   }
+
   const roleColour = r => {
     if (r === "superadmin") return { bg: "#F5E6C8", color: "#5C3D08" }
     if (r === "branch_office") return { bg: "#D6E8F7", color: "#0C2E52" }
@@ -172,13 +173,24 @@ function AccountSwitcher({ currentUser }) {
     if (r === "director") return { bg: "#EDD4EA", color: "#3D0A38" }
     return { bg: "#E8E8E8", color: "#1A1A1A" }
   }
+
   const filtered = accounts.filter(a =>
     a.name.toLowerCase().includes(search.toLowerCase()) ||
     a.email.toLowerCase().includes(search.toLowerCase()) ||
     a.role.toLowerCase().includes(search.toLowerCase())
   )
-  const inputStyle = { width: "100%", padding: "12px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box" }
-  const labelStyle = { fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, display: "block", marginBottom: "8px", letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700" }
+
+  const inputStyle = {
+    width: "100%", padding: "12px 14px",
+    border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`,
+    background: "#FDFAF2", fontFamily: "'Playfair Display', serif",
+    fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box"
+  }
+  const labelStyle = {
+    fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD,
+    display: "block", marginBottom: "8px", letterSpacing: "3px",
+    textTransform: "uppercase", fontWeight: "700"
+  }
 
   return (
     <div>
@@ -224,60 +236,36 @@ function AccountSwitcher({ currentUser }) {
 
       {loading ? (
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
+      ) : filtered.length === 0 ? (
+        <div style={{ padding: "32px 24px", textAlign: "center" }}>
+          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: "#999", margin: 0 }}>No accounts found</p>
+        </div>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <div className="switcher-header" style={{ display: "grid", gridTemplateColumns: "minmax(0,2fr) minmax(0,2fr) 140px 150px", padding: "10px 24px", marginBottom: "6px" }}>
-            {["Name", "Email", "Role", "Action"].map(h => (
-              <p key={h} style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", margin: 0 }}>{h}</p>
-            ))}
-          </div>
-          {filtered.length === 0 ? (
-            <div style={{ padding: "32px 24px", textAlign: "center" }}>
-              <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: "#999", margin: 0 }}>No accounts found</p>
-            </div>
-          ) : (
-            filtered.map((acc, i) => {
-              const rc = roleColour(acc.role)
-              const isCurrent = acc.id === currentUser.id
-              return (
-                <div key={acc.id} className="switcher-card" style={{ display: "grid", gridTemplateColumns: "minmax(0,2fr) minmax(0,2fr) 140px 150px", padding: "16px 24px", marginBottom: "10px", alignItems: "center", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <div style={{ width: "40px", height: "40px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {filtered.map((acc) => {
+            const rc = roleColour(acc.role)
+            const isCurrent = acc.id === currentUser.id
+            return (
+              <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "16px 20px", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px", flexWrap: "wrap" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
+                  <div style={{ width: "42px", height: "42px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "700", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.email}</p>
                   </div>
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", paddingRight: "12px" }}>{acc.email}</p>
-                  <span style={{ display: "inline-block", width: "130px", padding: "10px 0", textAlign: "center", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "8px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
+                  <span style={{ padding: "7px 16px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
+                  <div style={{ width: "0.5px", height: "28px", background: GOLD_LIGHT }} />
                   {isCurrent ? (
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
-                      <span style={{ display: "inline-block", width: "130px", padding: "10px 0", textAlign: "center", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif" }}>✓ Signed in</span>
-                    </div>
+                    <span style={{ padding: "7px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "6px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap" }}>✓ Signed in</span>
                   ) : (
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                      <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
-                      <button
-                        onClick={() => switchTo(acc)}
-                        disabled={switching === acc.id}
-                        style={{
-                          width: "130px",
-                          padding: "10px 0",
-                          textAlign: "center",
-                          background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`,
-                          color: WHITE,
-                          border: "none",
-                          borderRadius: "8px",
-                          fontFamily: "'Playfair Display', serif",
-                          fontSize: "13px",
-                          fontWeight: "700",
-                          cursor: switching === acc.id ? "not-allowed" : "pointer",
-                        }}
-                      >{switching === acc.id ? "Switching..." : "Switch"}</button>
-                    </div>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>{switching === acc.id ? "Switching..." : "Switch"}</button>
                   )}
                 </div>
-              )
-            })
-          )}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
@@ -316,22 +304,16 @@ export default function Dashboard({ user, onLogout }) {
         @media (max-width: 768px) {
           .sidebar { transform: translateX(-100%); transition: transform 0.25s ease; position: fixed !important; z-index: 200; height: 100vh; top: 0; left: 0; }
           .sidebar.open { transform: translateX(0); }
-
           .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
-          .hamburger { display: none !important; }
           .mobile-topbar { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
-          .switcher-header { display: none !important; }
-          .switcher-card { grid-template-columns: 42px 1fr 120px !important; gap: 8px !important; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
-          .hamburger { display: none !important; }
-          .sidebar-backdrop { display: none !important; }
+          .mobile-topbar { display: none !important; }
         }
       `}</style>
 
-      {/* Impersonation banner */}
       {isImpersonating && (
         <div className="impersonate-bar" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 999, background: "#7A5C10", color: WHITE, padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
           <span>Viewing as <strong>{user.name}</strong></span>
@@ -339,17 +321,8 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       )}
 
-      {/* Mobile backdrop */}
       {sidebarOpen && <div onClick={() => setSidebarOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 199, marginTop: topOffset }} />}
 
-      {/* Hamburger button */}
-      <button className="hamburger" onClick={() => setSidebarOpen(!sidebarOpen)} style={{ display: "none", position: "fixed", top: topOffset + 10, left: 10, zIndex: 300, background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "8px 10px", cursor: "pointer", flexDirection: "column", gap: "4px", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", pointerEvents: "auto" }}>
-        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
-        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
-        <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
-      </button>
-
-      {/* Sidebar */}
       <div className={`sidebar${sidebarOpen ? " open" : ""}`} style={{ width: `${SIDEBAR_W}px`, background: WHITE, borderRight: `1px solid ${GOLD_LIGHT}`, display: "flex", flexDirection: "column", flexShrink: 0, marginTop: topOffset, overflowY: "auto" }}>
         <div style={{ padding: "32px 20px 24px", borderBottom: `1px solid #EDE0B8`, textAlign: "center" }}>
           <img src={logo} alt="TM Beauty Hub" style={{ width: "80px", height: "80px", objectFit: "contain", filter: "drop-shadow(0 2px 8px rgba(168,124,42,0.25))" }}/>
@@ -373,9 +346,7 @@ export default function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="main-content" style={{ flex: 1, padding: "48px 56px", marginTop: topOffset, overflowY: "auto", marginLeft: 0 }}>
-        {/* Mobile top bar */}
         <div className="mobile-topbar" style={{ display: "none", alignItems: "center", gap: "12px", marginBottom: "20px", paddingBottom: "16px", borderBottom: `1px solid ${GOLD_LIGHT}` }}>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderRadius: "8px", padding: "8px 10px", cursor: "pointer", display: "flex", flexDirection: "column", gap: "4px", alignItems: "center", justifyContent: "center", width: "40px", height: "40px", flexShrink: 0 }}>
             <div style={{ width: "18px", height: "1.5px", background: GOLD }} />
