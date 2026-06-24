@@ -203,7 +203,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             <div style={{
               width: "145px",
               flexShrink: 0,
-              padding: "12px 14px",
+              padding: "12px 20px 12px 16px",
               borderLeft: `0.5px solid #e8dcc8`,
               display: "flex",
               flexDirection: "column",
