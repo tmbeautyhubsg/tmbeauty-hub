@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import logo from "./logo.png"
 import MembershipTiers from "./MembershipTiers"
+import Users from "./Users"
 
 const GOLD = "#A87C2A"
 const GOLD_LIGHT = "#D4B86A"
@@ -312,6 +313,7 @@ export default function Dashboard({ user, onLogout }) {
         {activePage === "Dashboard" && <DashboardHome user={user} />}
         {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
         {activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
+        {activePage === "Users" && <Users />}
         {!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
           <div>
             <PageHeader sub="Module" title={activePage} />
