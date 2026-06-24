@@ -218,8 +218,8 @@ function AccountSwitcher({ currentUser }) {
       {loading ? (
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
       ) : (
-        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, overflowX: "auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "14px 24px", borderBottom: `1px solid ${GOLD_LIGHT}`, background: "#FDFAF2", minWidth: "500px" }}>
+        <div style={{ overflowX: "auto" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "10px 22px", marginBottom: "4px" }}>
             {["Name", "Email", "Role", "Action"].map(h => (
               <p key={h} style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", margin: 0 }}>{h}</p>
             ))}
@@ -233,7 +233,7 @@ function AccountSwitcher({ currentUser }) {
               const rc = roleColour(acc.role)
               const isCurrent = acc.id === currentUser.id
               return (
-                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "16px 24px", borderBottom: i < filtered.length - 1 ? `1px solid #F0E8CC` : "none", alignItems: "center", background: isCurrent ? "#FDFAF2" : WHITE, minWidth: "500px" }}>
+                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 1.5fr 1.5fr", padding: "18px 22px", marginBottom: "10px", alignItems: "center", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div style={{ width: "38px", height: "38px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "15px", fontWeight: "700", color: GOLD, flexShrink: 0 }}>{acc.name.charAt(0).toUpperCase()}</div>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
@@ -241,27 +241,29 @@ function AccountSwitcher({ currentUser }) {
                   <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, margin: 0 }}>{acc.email}</p>
                   <span style={{ display: "inline-block", padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
-                    <div style={{ display: "inline-block", padding: "10px 20px", background: "#FDF6E3", border: `1px solid ${GOLD}`, borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", color: GOLD, fontWeight: "700", letterSpacing: "1px", textAlign: "center" }}>You</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
+                      <span style={{ fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", padding: "8px 16px", borderRadius: "8px", fontFamily: "'Playfair Display', serif" }}>✓ Signed in</span>
+                    </div>
                   ) : (
-                    <button
-                      onClick={() => switchTo(acc)}
-                      disabled={switching === acc.id}
-                      style={{
-                        padding: "12px 28px",
-                        background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 60%, #8B6520 100%)`,
-                        color: WHITE,
-                        border: "none",
-                        borderRadius: "8px",
-                        fontFamily: "'Playfair Display', serif",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        letterSpacing: "2px",
-                        cursor: switching === acc.id ? "not-allowed" : "pointer",
-                        boxShadow: switching === acc.id ? "none" : "0 4px 16px rgba(168,124,42,0.45), inset 0 1px 0 rgba(255,255,255,0.15)",
-                        transition: "all 0.2s",
-                        minWidth: "110px",
-                      }}
-                    >{switching === acc.id ? "Switching..." : "Switch Account"}</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
+                      <button
+                        onClick={() => switchTo(acc)}
+                        disabled={switching === acc.id}
+                        style={{
+                          padding: "11px 22px",
+                          background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`,
+                          color: WHITE,
+                          border: "none",
+                          borderRadius: "10px",
+                          fontFamily: "'Playfair Display', serif",
+                          fontSize: "14px",
+                          fontWeight: "700",
+                          cursor: switching === acc.id ? "not-allowed" : "pointer",
+                        }}
+                      >{switching === acc.id ? "Switching..." : "Switch"}</button>
+                    </div>
                   )}
                 </div>
               )
