@@ -212,9 +212,9 @@ function AccountSwitcher({ currentUser }) {
                   </div>
                   <span className="acc-role" style={{ padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap", flexShrink: 0 }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
-                    <span style={{ padding: "9px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap", flexShrink: 0 }}>✓ Signed in</span>
+                    <span style={{ width: "120px", padding: "9px 0", textAlign: "center", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap", flexShrink: 0 }}>✓ Signed in</span>
                   ) : (
-                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{switching === acc.id ? "..." : "Switch"}</button>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ width: "120px", padding: "9px 0", textAlign: "center", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{switching === acc.id ? "..." : "Switch"}</button>
                   )}
                 </div>
               </div>
