@@ -164,20 +164,27 @@ const styles = {
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "8px",
+    gap: "8px",
   },
   rowLabel: {
     fontSize: "12px",
     color: muted,
+    whiteSpace: "nowrap",
+    flexShrink: 0,
   },
   rowValue: {
-    fontSize: "13px",
+    fontSize: "12px",
     color: black,
     fontWeight: "600",
+    textAlign: "right",
+    whiteSpace: "nowrap",
   },
   rowValueGold: {
-    fontSize: "13px",
+    fontSize: "12px",
     color: gold,
     fontWeight: "600",
+    textAlign: "right",
+    whiteSpace: "nowrap",
   },
   requestBtn: {
     marginTop: "18px",
@@ -412,10 +419,14 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             </div>
             <div style={styles.row}>
               <span style={styles.rowLabel}>Upgrade fee</span>
-              <span style={styles.rowValue}>
-                {tier.upgradeFee ? `SGD ${tier.upgradeFee} → ${tier.upgradeTarget}` : "—"}
-              </span>
+              <span style={styles.rowValue}>{tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}</span>
             </div>
+            {tier.upgradeTarget && (
+              <div style={styles.row}>
+                <span style={styles.rowLabel}>Upgrades to</span>
+                <span style={styles.rowValue}>{tier.upgradeTarget}</span>
+              </div>
+            )}
 
             {!isSuperAdmin && (
               <button
