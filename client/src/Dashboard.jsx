@@ -246,11 +246,11 @@ function AccountSwitcher({ currentUser }) {
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
                   </div>
                   <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, margin: 0 }}>{acc.email}</p>
-                  <span style={{ display: "inline-block", padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
+                  <span style={{ display: "inline-block", width: "130px", padding: "10px 0", textAlign: "center", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "8px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
-                      <span style={{ fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", padding: "8px 16px", borderRadius: "8px", fontFamily: "'Playfair Display', serif" }}>✓ Signed in</span>
+                      <span style={{ display: "inline-block", width: "130px", padding: "10px 0", textAlign: "center", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif" }}>✓ Signed in</span>
                     </div>
                   ) : (
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -259,13 +259,15 @@ function AccountSwitcher({ currentUser }) {
                         onClick={() => switchTo(acc)}
                         disabled={switching === acc.id}
                         style={{
-                          padding: "11px 22px",
+                          width: "130px",
+                          padding: "10px 0",
+                          textAlign: "center",
                           background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`,
                           color: WHITE,
                           border: "none",
-                          borderRadius: "10px",
+                          borderRadius: "8px",
                           fontFamily: "'Playfair Display', serif",
-                          fontSize: "14px",
+                          fontSize: "13px",
                           fontWeight: "700",
                           cursor: switching === acc.id ? "not-allowed" : "pointer",
                         }}
