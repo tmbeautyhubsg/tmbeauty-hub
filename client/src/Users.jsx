@@ -80,7 +80,7 @@ function FormField({ label, children, required, note }) {
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
     <div style={{ display: "flex", gap: "8px" }}>
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "120px", flex: "none" }}>
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "100px", flex: "none" }}>
         {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
       </select>
       <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={iStyle} />
@@ -227,7 +227,7 @@ export default function Users() {
     payment_status: "full", amount_paid: "",
     payment_method: "Bank Transfer", payment_method_other: "",
     payment_reference: "", payment_date: "", onboarding_date: "",
-    onboarding_notes: "", base_credits: "", foc_credits: "", internal_notes: ""
+    onboarding_notes: "", base_credits: "", foc_credits: "", tssb_credits: "", internal_notes: ""
   })
 
   const token = localStorage.getItem("token")
@@ -305,6 +305,7 @@ export default function Users() {
         onboarding_notes: cf.onboarding_notes || null,
         base_credits: isPortOver ? (cf.base_credits || null) : (selectedPkg?.base_credits || null),
         foc_credits: isPortOver ? (cf.foc_credits || null) : (selectedPkg?.foc_credits || null),
+        tssb_credits: isPortOver ? (cf.tssb_credits || null) : null,
         internal_notes: cf.internal_notes || null,
       }
       const r = await fetch(`${API}/api/admin/members`, { method: "POST", headers: hdrs, body: JSON.stringify(payload) })
@@ -629,6 +630,9 @@ export default function Users() {
             </FormField>
             <FormField label="FOC Credits" note={selectedPkg ? `Package default: ${selectedPkg.foc_credits}` : ""}>
               <input type="number" value={cf.foc_credits} onChange={e => setCf({...cf, foc_credits: e.target.value})} placeholder={selectedPkg?.foc_credits || "e.g. 10"} style={iStyle} />
+            </FormField>
+            <FormField label="TSSB Credits" note="Enter TSSB credit balance from manual records">
+              <input type="number" value={cf.tssb_credits} onChange={e => setCf({...cf, tssb_credits: e.target.value})} placeholder="e.g. 0" style={iStyle} />
             </FormField>
           </div>
         </>
