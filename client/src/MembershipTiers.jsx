@@ -53,299 +53,17 @@ const TIERS = [
 
 const gold = "#A87C2A";
 const lightGold = "#D4B86A";
-const ivory = "#F7F0E3";
 const cardBg = "#FFFDF7";
 const black = "#1A1A1A";
 const muted = "#8a7050";
-
-const styles = {
-  page: {
-    fontFamily: "'Playfair Display', serif",
-    background: "transparent",
-    
-    padding: "0",
-  },
-  header: {
-    textAlign: "center",
-    marginBottom: "2.5rem",
-  },
-  title: {
-    fontSize: "28px",
-    fontWeight: "700",
-    color: black,
-    marginBottom: "6px",
-    letterSpacing: "1px",
-  },
-  subtitle: {
-    fontSize: "14px",
-    color: muted,
-    letterSpacing: "1.5px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: "18px",
-    maxWidth: "100%",
-    margin: "0 auto",
-  },
-  card: {
-    background: cardBg,
-    border: `0.5px solid ${lightGold}`,
-    borderTop: `3px solid ${gold}`,
-    borderRadius: "12px",
-    padding: "1.5rem 1.25rem",
-    position: "relative",
-    overflow: "hidden",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0",
-  },
-  watermark: {
-    position: "absolute",
-    bottom: "10px",
-    right: "12px",
-    fontSize: "42px",
-    color: lightGold,
-    opacity: 0.12,
-    fontStyle: "italic",
-    lineHeight: 1,
-    pointerEvents: "none",
-    userSelect: "none",
-  },
-  chineseName: {
-    fontSize: "13px",
-    letterSpacing: "2px",
-    color: gold,
-    marginBottom: "4px",
-  },
-  tierName: {
-    fontSize: "20px",
-    fontWeight: "700",
-    color: black,
-    marginBottom: "14px",
-  },
-  ornament: {
-    display: "flex",
-    alignItems: "center",
-    gap: "6px",
-    marginBottom: "14px",
-  },
-  ornamentLine: {
-    flex: 1,
-    height: "0.5px",
-    background: lightGold,
-  },
-  ornamentDot: {
-    width: "4px",
-    height: "4px",
-    borderRadius: "50%",
-    background: gold,
-    flexShrink: 0,
-  },
-  price: {
-    fontSize: "26px",
-    fontWeight: "700",
-    color: gold,
-    marginBottom: "2px",
-  },
-  priceSub: {
-    fontSize: "13px",
-    color: muted,
-    marginBottom: "16px",
-    letterSpacing: "0.5px",
-  },
-  divider: {
-    height: "0.5px",
-    background: "#e8dcc8",
-    margin: "10px 0",
-  },
-  row: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "8px",
-    gap: "8px",
-  },
-  rowLabel: {
-    fontSize: "14px",
-    color: muted,
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-  },
-  rowValue: {
-    fontSize: "14px",
-    color: black,
-    fontWeight: "600",
-    textAlign: "right",
-    whiteSpace: "nowrap",
-  },
-  rowValueGold: {
-    fontSize: "14px",
-    color: gold,
-    fontWeight: "600",
-    textAlign: "right",
-    whiteSpace: "nowrap",
-  },
-  requestBtn: {
-    marginTop: "18px",
-    width: "100%",
-    padding: "11px 0",
-    background: `linear-gradient(135deg, #C9A84C, ${gold})`,
-    color: "#fff",
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "13px",
-    fontFamily: "'Playfair Display', serif",
-    fontWeight: "600",
-    letterSpacing: "1px",
-    cursor: "pointer",
-  },
-  modalOverlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(0,0,0,0.45)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-    padding: "1rem",
-  },
-  modal: {
-    background: cardBg,
-    border: `1px solid ${lightGold}`,
-    borderTop: `4px solid ${gold}`,
-    borderRadius: "12px",
-    padding: "2rem 1.5rem",
-    width: "100%",
-    maxWidth: "420px",
-    fontFamily: "'Playfair Display', serif",
-  },
-  modalTitle: {
-    fontSize: "18px",
-    fontWeight: "700",
-    color: black,
-    marginBottom: "6px",
-  },
-  modalSub: {
-    fontSize: "12px",
-    color: muted,
-    marginBottom: "20px",
-    letterSpacing: "0.5px",
-  },
-  modalSection: {
-    background: "transparent",
-    border: `0.5px solid ${lightGold}`,
-    borderRadius: "8px",
-    padding: "12px 14px",
-    marginBottom: "16px",
-  },
-  modalRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "6px",
-  },
-  modalLabel: {
-    fontSize: "12px",
-    color: muted,
-  },
-  modalValue: {
-    fontSize: "13px",
-    color: black,
-    fontWeight: "600",
-  },
-  modalValueGold: {
-    fontSize: "13px",
-    color: gold,
-    fontWeight: "600",
-  },
-  modalNote: {
-    fontSize: "11px",
-    color: muted,
-    lineHeight: "1.6",
-    marginBottom: "20px",
-    padding: "10px 12px",
-    borderLeft: `2px solid ${lightGold}`,
-    background: "transparent",
-    borderRadius: "0 6px 6px 0",
-  },
-  modalBtnRow: {
-    display: "flex",
-    gap: "10px",
-  },
-  cancelBtn: {
-    flex: 1,
-    padding: "11px 0",
-    background: "transparent",
-    border: `0.5px solid ${lightGold}`,
-    borderRadius: "8px",
-    fontSize: "13px",
-    fontFamily: "'Playfair Display', serif",
-    color: muted,
-    cursor: "pointer",
-  },
-  confirmBtn: {
-    flex: 2,
-    padding: "11px 0",
-    background: `linear-gradient(135deg, #C9A84C, ${gold})`,
-    border: "none",
-    borderRadius: "8px",
-    fontSize: "13px",
-    fontFamily: "'Playfair Display', serif",
-    fontWeight: "600",
-    color: "#fff",
-    cursor: "pointer",
-    letterSpacing: "0.5px",
-  },
-  successBox: {
-    textAlign: "center",
-    padding: "1rem 0",
-  },
-  successIcon: {
-    fontSize: "36px",
-    marginBottom: "12px",
-  },
-  successTitle: {
-    fontSize: "17px",
-    fontWeight: "700",
-    color: black,
-    marginBottom: "8px",
-  },
-  successSub: {
-    fontSize: "12px",
-    color: muted,
-    lineHeight: "1.7",
-  },
-  noUplineBox: {
-    textAlign: "center",
-    padding: "1rem 0",
-  },
-  noUplineIcon: {
-    fontSize: "32px",
-    marginBottom: "12px",
-  },
-  noUplineTitle: {
-    fontSize: "16px",
-    fontWeight: "600",
-    color: black,
-    marginBottom: "8px",
-  },
-  noUplineSub: {
-    fontSize: "12px",
-    color: muted,
-    lineHeight: "1.7",
-    marginBottom: "20px",
-  },
-};
 
 const mockUser = {
   hasUpline: true,
   uplineName: "Sarah Tan",
   uplineRole: "Director",
-  currentTier: null,
 };
 
 export default function MembershipTiers({ isSuperAdmin = false }) {
-  const [tiers] = useState(TIERS);
   const [selectedTier, setSelectedTier] = useState(null);
   const [step, setStep] = useState("confirm");
 
@@ -354,191 +72,272 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
     setStep(mockUser.hasUpline ? "confirm" : "no_upline");
   };
 
-  const handleConfirm = () => {
-    setStep("success");
+  const handleConfirm = () => setStep("success");
+  const handleClose = () => { setSelectedTier(null); setStep("confirm"); };
+
+  const ff = "'Playfair Display', serif";
+
+  const cellStyle = {
+    padding: "0 12px",
+    borderRight: `0.5px solid #e8dcc8`,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    flex: 1,
   };
 
-  const handleClose = () => {
-    setSelectedTier(null);
-    setStep("confirm");
+  const slStyle = {
+    fontFamily: ff,
+    fontSize: "11px",
+    color: muted,
+    marginBottom: "5px",
+    whiteSpace: "nowrap",
+    height: "16px",
+    display: "flex",
+    alignItems: "center",
+  };
+
+  const svStyle = {
+    fontFamily: ff,
+    fontSize: "14px",
+    fontWeight: "600",
+    color: black,
+    whiteSpace: "nowrap",
+    height: "20px",
+    display: "flex",
+    alignItems: "center",
   };
 
   return (
-    <div style={styles.page}>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet"
-      />
+    <div style={{ fontFamily: ff, background: "transparent", padding: 0 }}>
 
-      <div style={styles.header}>
-        <div style={styles.title}>Membership Tiers</div>
-        <div style={styles.subtitle}>
+      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <div style={{ fontSize: "24px", fontWeight: "700", color: black, marginBottom: "4px", letterSpacing: "1px" }}>
+          Membership Tiers
+        </div>
+        <div style={{ fontSize: "13px", color: muted, letterSpacing: "1px" }}>
           Entry package · Full payment · Stock released upon upline confirmation
         </div>
       </div>
 
-      <div style={styles.grid}>
-        {tiers.map((tier) => (
-          <div key={tier.id} style={styles.card}>
-            <div style={styles.watermark}>{tier.chineseName}</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {TIERS.map((tier) => (
+          <div key={tier.id} style={{
+            display: "flex",
+            alignItems: "stretch",
+            background: cardBg,
+            border: `0.5px solid ${lightGold}`,
+            borderTop: `3px solid ${gold}`,
+            borderRadius: "10px",
+            overflow: "hidden",
+            position: "relative",
+            minHeight: "84px",
+          }}>
+            {/* Watermark */}
+            <div style={{
+              position: "absolute",
+              bottom: "-4px",
+              left: "158px",
+              fontSize: "52px",
+              color: lightGold,
+              opacity: 0.1,
+              fontStyle: "italic",
+              pointerEvents: "none",
+              userSelect: "none",
+              lineHeight: 1,
+              fontFamily: ff,
+            }}>{tier.chineseName}</div>
 
-            <div style={styles.chineseName}>{tier.chineseName}</div>
-            <div style={styles.tierName}>{tier.englishName}</div>
-
-            <div style={styles.ornament}>
-              <div style={styles.ornamentLine} />
-              <div style={styles.ornamentDot} />
-              <div style={styles.ornamentLine} />
-            </div>
-
-            <div style={styles.price}>
-              SGD {tier.price.toLocaleString()}
-            </div>
-            <div style={styles.priceSub}>One-time entry package</div>
-
-            <div style={styles.divider} />
-
-            <div style={styles.row}>
-              <span style={styles.rowLabel}>Base credits</span>
-              <span style={styles.rowValue}>{tier.baseCredits}</span>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.rowLabel}>FOC credits</span>
-              <span style={styles.rowValueGold}>+{tier.focCredits}</span>
-            </div>
-
-            <div style={styles.divider} />
-
-            <div style={styles.row}>
-              <span style={styles.rowLabel}>Replenishment</span>
-              <span style={styles.rowValue}>SGD {tier.replenishmentPrice}/unit</span>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.rowLabel}>Closing fee</span>
-              <span style={styles.rowValue}>SGD {tier.closingFee}</span>
-            </div>
-            <div style={styles.row}>
-              <span style={styles.rowLabel}>Upgrade fee</span>
-              <span style={styles.rowValue}>{tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}</span>
-            </div>
-            {tier.upgradeTarget && (
-              <div style={styles.row}>
-                <span style={styles.rowLabel}>Upgrades to</span>
-                <span style={styles.rowValue}>{tier.upgradeTarget}</span>
+            {/* Left — tier name */}
+            <div style={{
+              width: "150px",
+              flexShrink: 0,
+              padding: "14px 20px",
+              borderRight: `0.5px solid #e8dcc8`,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}>
+              <div style={{ fontSize: "11px", color: gold, letterSpacing: "2px", height: "16px", display: "flex", alignItems: "center", fontFamily: ff }}>
+                {tier.chineseName}
               </div>
-            )}
-            <div style={{flex: 1}} />
+              <div style={{ fontSize: "17px", fontWeight: "700", color: black, height: "44px", display: "flex", alignItems: "center", fontFamily: ff, lineHeight: 1.2 }}>
+                {tier.englishName}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "5px", height: "12px" }}>
+                <div style={{ width: "20px", height: "0.5px", background: lightGold }} />
+                <div style={{ width: "3px", height: "3px", borderRadius: "50%", background: gold, flexShrink: 0 }} />
+                <div style={{ width: "20px", height: "0.5px", background: lightGold }} />
+              </div>
+            </div>
 
-            {!isSuperAdmin && (
-              <button
-                style={{...styles.requestBtn, marginTop: "0"}}
-                onClick={() => handleRequest(tier)}
-              >
-                Request to Join
-              </button>
-            )}
+            {/* Mid — stats */}
+            <div style={{ flex: 1, display: "flex", alignItems: "stretch" }}>
+              <div style={cellStyle}>
+                <div style={slStyle}>Base credits</div>
+                <div style={svStyle}>{tier.baseCredits}</div>
+              </div>
+              <div style={cellStyle}>
+                <div style={slStyle}>FOC credits</div>
+                <div style={{ ...svStyle, color: gold }}>+{tier.focCredits}</div>
+              </div>
+              <div style={cellStyle}>
+                <div style={slStyle}>Replenishment</div>
+                <div style={svStyle}>SGD {tier.replenishmentPrice}</div>
+              </div>
+              <div style={cellStyle}>
+                <div style={slStyle}>Closing fee</div>
+                <div style={svStyle}>SGD {tier.closingFee}</div>
+              </div>
+              <div style={{ ...cellStyle, borderRight: "none" }}>
+                <div style={slStyle}>Upgrade fee</div>
+                <div style={svStyle}>
+                  {tier.upgradeFee ? `SGD ${tier.upgradeFee} → ${tier.upgradeTarget}` : "—"}
+                </div>
+              </div>
+            </div>
 
-            {isSuperAdmin && (
-              <button
-                style={{ ...styles.requestBtn, background: "#555", marginTop: "18px" }}
-                onClick={() => alert(`Edit ${tier.englishName} package`)}
-              >
-                Edit Package
-              </button>
-            )}
+            {/* Right — price + button */}
+            <div style={{
+              width: "160px",
+              flexShrink: 0,
+              padding: "14px 16px",
+              borderLeft: `0.5px solid #e8dcc8`,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "4px",
+            }}>
+              <div style={{ fontSize: "20px", fontWeight: "700", color: gold, whiteSpace: "nowrap", fontFamily: ff, height: "28px", display: "flex", alignItems: "center" }}>
+                SGD {tier.price.toLocaleString()}
+              </div>
+              <div style={{ fontSize: "10px", color: muted, whiteSpace: "nowrap", fontFamily: ff, height: "16px", display: "flex", alignItems: "center" }}>
+                One-time entry
+              </div>
+              {!isSuperAdmin ? (
+                <button
+                  onClick={() => handleRequest(tier)}
+                  style={{
+                    marginTop: "6px",
+                    width: "100%",
+                    height: "36px",
+                    background: "linear-gradient(135deg, #C9A84C, #A87C2A)",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: ff,
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    letterSpacing: "1px",
+                    cursor: "pointer",
+                  }}
+                >Request to Join</button>
+              ) : (
+                <button
+                  onClick={() => alert(`Edit ${tier.englishName}`)}
+                  style={{
+                    marginTop: "6px",
+                    width: "100%",
+                    height: "36px",
+                    background: "#666",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontFamily: ff,
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                  }}
+                >Edit Package</button>
+              )}
+            </div>
           </div>
         ))}
       </div>
 
+      {/* Modal */}
       {selectedTier && (
-        <div style={styles.modalOverlay} onClick={handleClose}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div onClick={handleClose} style={{
+          position: "fixed", inset: 0,
+          background: "rgba(0,0,0,0.45)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          zIndex: 1000, padding: "1rem",
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background: cardBg,
+            border: `1px solid ${lightGold}`,
+            borderTop: `4px solid ${gold}`,
+            borderRadius: "12px",
+            padding: "2rem 1.5rem",
+            width: "100%", maxWidth: "420px",
+            fontFamily: ff,
+          }}>
 
             {step === "no_upline" && (
-              <div style={styles.noUplineBox}>
-                <div style={styles.noUplineIcon}>🔗</div>
-                <div style={styles.noUplineTitle}>No upline linked</div>
-                <div style={styles.noUplineSub}>
-                  You need to be linked to an upline before you can request a membership package. Please contact your upline or reach out to the administrator.
+              <div style={{ textAlign: "center", padding: "1rem 0" }}>
+                <div style={{ fontSize: "32px", marginBottom: "12px" }}>🔗</div>
+                <div style={{ fontSize: "16px", fontWeight: "600", color: black, marginBottom: "8px" }}>No upline linked</div>
+                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7", marginBottom: "20px" }}>
+                  You need to be linked to an upline before requesting a package. Please contact your upline or the administrator.
                 </div>
-                <button style={styles.cancelBtn} onClick={handleClose}>
-                  Close
-                </button>
+                <button onClick={handleClose} style={{ padding: "10px 24px", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Close</button>
               </div>
             )}
 
             {step === "confirm" && (
               <>
-                <div style={styles.modalTitle}>
-                  Request — {selectedTier.englishName}
-                </div>
-                <div style={styles.modalSub}>
-                  {selectedTier.chineseName} · One-time entry package
+                <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "6px" }}>Request — {selectedTier.englishName}</div>
+                <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{selectedTier.chineseName} · One-time entry package</div>
+
+                <div style={{ border: `0.5px solid ${lightGold}`, borderRadius: "8px", padding: "12px 14px", marginBottom: "14px" }}>
+                  {[
+                    ["Package amount", `SGD ${selectedTier.price.toLocaleString()}`, true],
+                    ["Base credits", selectedTier.baseCredits, false],
+                    ["FOC credits", `+${selectedTier.focCredits}`, true],
+                    ["Total credits", selectedTier.baseCredits + selectedTier.focCredits, false],
+                  ].map(([l, v, g]) => (
+                    <div key={l} style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "12px", color: muted }}>{l}</span>
+                      <span style={{ fontSize: "13px", fontWeight: "600", color: g ? gold : black }}>{v}</span>
+                    </div>
+                  ))}
                 </div>
 
-                <div style={styles.modalSection}>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>Package amount</span>
-                    <span style={styles.modalValueGold}>
-                      SGD {selectedTier.price.toLocaleString()}
-                    </span>
-                  </div>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>Base credits</span>
-                    <span style={styles.modalValue}>{selectedTier.baseCredits}</span>
-                  </div>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>FOC credits</span>
-                    <span style={styles.modalValueGold}>+{selectedTier.focCredits}</span>
-                  </div>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>Total credits</span>
-                    <span style={styles.modalValue}>
-                      {selectedTier.baseCredits + selectedTier.focCredits}
-                    </span>
-                  </div>
+                <div style={{ border: `0.5px solid ${lightGold}`, borderRadius: "8px", padding: "12px 14px", marginBottom: "14px" }}>
+                  {[
+                    ["Request sent to", mockUser.uplineName],
+                    ["Upline tier", mockUser.uplineRole],
+                  ].map(([l, v]) => (
+                    <div key={l} style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <span style={{ fontSize: "12px", color: muted }}>{l}</span>
+                      <span style={{ fontSize: "13px", fontWeight: "600", color: black }}>{v}</span>
+                    </div>
+                  ))}
                 </div>
 
-                <div style={styles.modalSection}>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>Request sent to</span>
-                    <span style={styles.modalValue}>{mockUser.uplineName}</span>
-                  </div>
-                  <div style={styles.modalRow}>
-                    <span style={styles.modalLabel}>Upline tier</span>
-                    <span style={styles.modalValue}>{mockUser.uplineRole}</span>
-                  </div>
+                <div style={{ fontSize: "11px", color: muted, lineHeight: "1.6", marginBottom: "20px", padding: "10px 12px", borderLeft: `2px solid ${lightGold}`, borderRadius: "0 6px 6px 0" }}>
+                  Stock releases only after full payment is confirmed by your upline. All transactions are timestamped and recorded.
                 </div>
 
-                <div style={styles.modalNote}>
-                  Your upline will be notified to confirm payment receipt. Stock will only be released after full payment is confirmed by your upline. All transactions are timestamped and recorded.
-                </div>
-
-                <div style={styles.modalBtnRow}>
-                  <button style={styles.cancelBtn} onClick={handleClose}>
-                    Cancel
-                  </button>
-                  <button style={styles.confirmBtn} onClick={handleConfirm}>
-                    Confirm Request
-                  </button>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button onClick={handleClose} style={{ flex: 1, padding: "11px 0", background: "transparent", border: `0.5px solid ${lightGold}`, borderRadius: "8px", fontFamily: ff, fontSize: "13px", color: muted, cursor: "pointer" }}>Cancel</button>
+                  <button onClick={handleConfirm} style={{ flex: 2, padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: "pointer" }}>Confirm Request</button>
                 </div>
               </>
             )}
 
             {step === "success" && (
-              <div style={styles.successBox}>
-                <div style={styles.successIcon}>✓</div>
-                <div style={styles.successTitle}>Request sent</div>
-                <div style={styles.successSub}>
-                  Your request for the <strong>{selectedTier.englishName}</strong> package has been sent to <strong>{mockUser.uplineName}</strong>.<br /><br />
-                  You will be notified once your upline confirms payment receipt and your stock has been released.
+              <div style={{ textAlign: "center", padding: "1rem 0" }}>
+                <div style={{ fontSize: "36px", marginBottom: "12px" }}>✓</div>
+                <div style={{ fontSize: "17px", fontWeight: "700", color: black, marginBottom: "8px" }}>Request sent</div>
+                <div style={{ fontSize: "12px", color: muted, lineHeight: "1.7" }}>
+                  Your request for <strong>{selectedTier.englishName}</strong> has been sent to <strong>{mockUser.uplineName}</strong>.<br /><br />
+                  You will be notified once your upline confirms payment and stock is released.
                 </div>
-                <button
-                  style={{ ...styles.confirmBtn, marginTop: "20px", width: "100%" }}
-                  onClick={handleClose}
-                >
-                  Done
-                </button>
+                <button onClick={handleClose} style={{ marginTop: "20px", width: "100%", padding: "11px 0", background: `linear-gradient(135deg, #C9A84C, ${gold})`, border: "none", borderRadius: "8px", fontFamily: ff, fontSize: "13px", fontWeight: "600", color: "#fff", cursor: "pointer" }}>Done</button>
               </div>
             )}
 
