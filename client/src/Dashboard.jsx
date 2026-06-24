@@ -33,25 +33,7 @@ function NavItem({ label, active, onClick }) {
   const [hovered, setHovered] = useState(false)
   const on = active || hovered
   return (
-    <div
-      onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{
-        padding: "8px 24px",
-        cursor: "pointer",
-        color: on ? GOLD : BLACK,
-        fontFamily: "'Playfair Display', serif",
-        fontSize: "16px",
-        borderLeft: `4px solid ${on ? GOLD : "transparent"}`,
-        background: on ? "#FDF6E3" : "transparent",
-        fontWeight: on ? "700" : "400",
-        transition: "all 0.15s",
-        minHeight: "32px",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >{label}</div>
+    <div onClick={onClick} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ padding: "8px 24px", cursor: "pointer", color: on ? GOLD : BLACK, fontFamily: "'Playfair Display', serif", fontSize: "16px", borderLeft: `4px solid ${on ? GOLD : "transparent"}`, background: on ? "#FDF6E3" : "transparent", fontWeight: on ? "700" : "400", transition: "all 0.15s", minHeight: "32px", display: "flex", alignItems: "center" }}>{label}</div>
   )
 }
 
@@ -180,17 +162,8 @@ function AccountSwitcher({ currentUser }) {
     a.role.toLowerCase().includes(search.toLowerCase())
   )
 
-  const inputStyle = {
-    width: "100%", padding: "12px 14px",
-    border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`,
-    background: "#FDFAF2", fontFamily: "'Playfair Display', serif",
-    fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box"
-  }
-  const labelStyle = {
-    fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD,
-    display: "block", marginBottom: "8px", letterSpacing: "3px",
-    textTransform: "uppercase", fontWeight: "700"
-  }
+  const inputStyle = { width: "100%", padding: "12px 14px", border: `1px solid ${GOLD_LIGHT}`, borderBottom: `2px solid ${GOLD}`, background: "#FDFAF2", fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, outline: "none", boxSizing: "border-box" }
+  const labelStyle = { fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, display: "block", marginBottom: "8px", letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700" }
 
   return (
     <div>
@@ -204,29 +177,15 @@ function AccountSwitcher({ currentUser }) {
       </div>
 
       {showCreate && (
-        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, padding: "32px", marginBottom: "28px", position: "relative" }}>
+        <div style={{ background: WHITE, border: `1px solid ${GOLD_LIGHT}`, borderTop: `3px solid ${GOLD}`, padding: "32px", marginBottom: "28px" }}>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: GOLD, letterSpacing: "3px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 24px" }}>New Account</p>
           {createError && <div style={{ background: "#FFF0F0", border: "1px solid #E8AAAA", color: "#8B0000", padding: "12px 16px", marginBottom: "20px", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>{createError}</div>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "20px", marginBottom: "24px" }}>
-            <div>
-              <label style={labelStyle}>Full Name</label>
-              <input type="text" placeholder="e.g. Celine Tan" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Email Address</label>
-              <input type="email" placeholder="e.g. celine@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value.trim().toLowerCase() })} style={inputStyle} />
-            </div>
-            <div>
-              <label style={labelStyle}>Role</label>
-              <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inputStyle}>
-                <option value="manager">Manager</option>
-                <option value="director">Director</option>
-                <option value="ceo">CEO</option>
-                <option value="branch_office">Branch Office</option>
-              </select>
-            </div>
+            <div><label style={labelStyle}>Full Name</label><input type="text" placeholder="e.g. Celine Tan" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Email Address</label><input type="email" placeholder="e.g. celine@example.com" value={form.email} onChange={e => setForm({ ...form, email: e.target.value.trim().toLowerCase() })} style={inputStyle} /></div>
+            <div><label style={labelStyle}>Role</label><select value={form.role} onChange={e => setForm({ ...form, role: e.target.value })} style={inputStyle}><option value="manager">Manager</option><option value="director">Director</option><option value="ceo">CEO</option><option value="branch_office">Branch Office</option></select></div>
           </div>
-          <button onClick={createAccount} disabled={creating} style={{ padding: "14px 36px", background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", cursor: creating ? "not-allowed" : "pointer", boxShadow: "0 4px 16px rgba(168,124,42,0.25)" }}>{creating ? "Creating..." : "Create Account"}</button>
+          <button onClick={createAccount} disabled={creating} style={{ padding: "14px 36px", background: creating ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C 0%, ${GOLD} 100%)`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", cursor: creating ? "not-allowed" : "pointer" }}>{creating ? "Creating..." : "Create Account"}</button>
         </div>
       )}
 
@@ -237,30 +196,25 @@ function AccountSwitcher({ currentUser }) {
       {loading ? (
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
       ) : filtered.length === 0 ? (
-        <div style={{ padding: "32px 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: "#999", margin: 0 }}>No accounts found</p>
-        </div>
+        <div style={{ padding: "32px 24px", textAlign: "center" }}><p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: "#999", margin: 0 }}>No accounts found</p></div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {filtered.map((acc) => {
             const rc = roleColour(acc.role)
             const isCurrent = acc.id === currentUser.id
             return (
-              <div key={acc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", padding: "16px 20px", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px", flexWrap: "wrap" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", minWidth: 0, flex: 1 }}>
+              <div key={acc.id} style={{ padding: "16px 20px", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                   <div style={{ width: "42px", height: "42px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
-                  <div style={{ minWidth: 0 }}>
+                  <div style={{ flex: 1, overflow: "hidden" }}>
                     <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "700", margin: "0 0 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.name}</p>
-                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.email}</p>
+                    <p className="acc-email" style={{ fontFamily: "'Playfair Display', serif", fontSize: "13px", color: "#6b5d4e", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{acc.email}</p>
                   </div>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexShrink: 0 }}>
-                  <span style={{ padding: "7px 16px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
-                  <div style={{ width: "0.5px", height: "28px", background: GOLD_LIGHT }} />
+                  <span className="acc-role" style={{ padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap", flexShrink: 0 }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
-                    <span style={{ padding: "7px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "6px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap" }}>✓ Signed in</span>
+                    <span style={{ padding: "9px 16px", fontSize: "13px", color: "#0A6B2A", fontWeight: "700", background: "#D4EDD4", borderRadius: "8px", fontFamily: "'Playfair Display', serif", whiteSpace: "nowrap", flexShrink: 0 }}>✓ Signed in</span>
                   ) : (
-                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap" }}>{switching === acc.id ? "Switching..." : "Switch"}</button>
+                    <button onClick={() => switchTo(acc)} disabled={switching === acc.id} style={{ padding: "9px 20px", background: switching === acc.id ? GOLD_LIGHT : `linear-gradient(135deg, #C9A84C, ${GOLD})`, color: WHITE, border: "none", borderRadius: "8px", fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", cursor: switching === acc.id ? "not-allowed" : "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>{switching === acc.id ? "..." : "Switch"}</button>
                   )}
                 </div>
               </div>
@@ -307,7 +261,8 @@ export default function Dashboard({ user, onLogout }) {
           .main-content { margin-left: 0 !important; padding: 20px 16px !important; }
           .mobile-topbar { display: flex !important; }
           .impersonate-bar { padding: 10px 16px !important; font-size: 13px !important; }
-          .hide-mobile { display: none !important; }
+          .acc-email { display: none !important; }
+          .acc-role { display: none !important; }
         }
         @media (min-width: 769px) {
           .sidebar { transform: none !important; position: relative !important; }
@@ -318,7 +273,7 @@ export default function Dashboard({ user, onLogout }) {
       {isImpersonating && (
         <div className="impersonate-bar" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 999, background: "#7A5C10", color: WHITE, padding: "12px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", fontFamily: "'Playfair Display', serif", fontSize: "15px" }}>
           <span>Viewing as <strong>{user.name}</strong></span>
-          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, borderRadius: "8px", color: WHITE, padding: "10px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "1px" }}>Return to Superadmin</button>
+          <button onClick={stopImpersonating} style={{ background: "transparent", border: `1px solid ${WHITE}`, borderRadius: "8px", color: WHITE, padding: "10px 20px", cursor: "pointer", fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700" }}>Return to Superadmin</button>
         </div>
       )}
 
@@ -330,18 +285,15 @@ export default function Dashboard({ user, onLogout }) {
           <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: "12px", color: GOLD, letterSpacing: "3px", margin: "12px 0 3px", textTransform: "uppercase", fontWeight: "700" }}>TM BEAUTY HUB</h2>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "12px", color: "#C9A84C", margin: 0, fontStyle: "italic" }}>Members Portal</p>
         </div>
-
         <div style={{ padding: "18px 20px", borderBottom: `1px solid #EDE0B8`, background: "#FDFAF2" }}>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: BLACK, fontWeight: "700", margin: "0 0 4px" }}>{user.name}</p>
           <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, margin: 0, textTransform: "uppercase", letterSpacing: "2px" }}>{user.role.replace(/_/g, " ")}</p>
         </div>
-
         <nav style={{ flex: 1, padding: "10px 0" }}>
           {navItems.map(item => (
             <NavItem key={item} label={item} active={activePage === item} onClick={() => handleNav(item)} />
           ))}
         </nav>
-
         <div style={{ padding: "20px", borderTop: `1px solid #EDE0B8` }}>
           <button onClick={onLogout} style={{ width: "100%", padding: "13px", background: "transparent", border: `1px solid ${GOLD}`, borderRadius: "8px", color: GOLD, fontFamily: "'Playfair Display', serif", fontSize: "14px", fontWeight: "700", letterSpacing: "2px", cursor: "pointer" }}>Sign Out</button>
         </div>
