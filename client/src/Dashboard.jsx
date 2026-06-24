@@ -157,7 +157,14 @@ function AccountSwitcher({ currentUser }) {
     setCreating(false)
   }
 
-  const roleLabel = r => r.replace(/_/g, " ").toUpperCase()
+  const roleLabel = r => {
+    if (r === "branch_office") return "Branch Office"
+    if (r === "superadmin") return "Superadmin"
+    if (r === "ceo") return "CEO"
+    if (r === "director") return "Director"
+    if (r === "manager") return "Manager"
+    return r.replace(/_/g, " ")
+  }
   const roleColour = r => {
     if (r === "superadmin") return { bg: "#F5E6C8", color: "#5C3D08" }
     if (r === "branch_office") return { bg: "#D6E8F7", color: "#0C2E52" }
@@ -219,8 +226,7 @@ function AccountSwitcher({ currentUser }) {
         <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "16px", color: GOLD, padding: "24px" }}>Loading accounts...</p>
       ) : (
         <div style={{ overflowX: "auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "60px 1.8fr 1.8fr 1.4fr 1.4fr", padding: "10px 22px", marginBottom: "4px" }}>
-            <div/>
+          <div style={{ display: "grid", gridTemplateColumns: "2fr 2fr 140px 150px", padding: "10px 24px", marginBottom: "6px" }}>
             {["Name", "Email", "Role", "Action"].map(h => (
               <p key={h} style={{ fontFamily: "'Playfair Display', serif", fontSize: "11px", color: GOLD, letterSpacing: "2px", textTransform: "uppercase", fontWeight: "700", margin: 0 }}>{h}</p>
             ))}
@@ -234,11 +240,13 @@ function AccountSwitcher({ currentUser }) {
               const rc = roleColour(acc.role)
               const isCurrent = acc.id === currentUser.id
               return (
-                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "60px 1.8fr 1.8fr 1.4fr 1.4fr", padding: "14px 22px", marginBottom: "10px", alignItems: "center", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
-                  <div style={{ width: "42px", height: "42px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
-                  <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
+                <div key={acc.id} style={{ display: "grid", gridTemplateColumns: "2fr 2fr 140px 150px", padding: "16px 24px", marginBottom: "10px", alignItems: "center", background: isCurrent ? "linear-gradient(135deg, #FFFBF0, #FFF8E8)" : "#FFFDF7", border: `0.5px solid ${isCurrent ? GOLD : GOLD_LIGHT}`, borderRadius: "12px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <div style={{ width: "40px", height: "40px", border: `1.5px solid ${GOLD}`, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "700", color: GOLD, flexShrink: 0, background: isCurrent ? "#F5E6C8" : "#FDF6E3" }}>{acc.name.charAt(0).toUpperCase()}</div>
+                    <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, fontWeight: "600", margin: 0 }}>{acc.name}</p>
+                  </div>
                   <p style={{ fontFamily: "'Playfair Display', serif", fontSize: "15px", color: BLACK, margin: 0 }}>{acc.email}</p>
-                  <span style={{ display: "inline-block", padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", letterSpacing: "1px", textTransform: "uppercase" }}>{roleLabel(acc.role)}</span>
+                  <span style={{ display: "inline-block", padding: "7px 14px", background: rc.bg, color: rc.color, fontFamily: "'Playfair Display', serif", fontSize: "13px", fontWeight: "700", borderRadius: "6px", whiteSpace: "nowrap" }}>{roleLabel(acc.role)}</span>
                   {isCurrent ? (
                     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                       <div style={{ width: "0.5px", height: "32px", background: GOLD_LIGHT }} />
