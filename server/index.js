@@ -242,6 +242,14 @@ app.get("/api/admin/packages/:id/audit", async (req, res) => {
   }
 })
 
+const membersRouter = require("./routes/members")
+const invitationsRouter = require("./routes/invitations")
+const hierarchyRouter = require("./routes/hierarchy")
+
+app.use("/api/admin/members", membersRouter)
+app.use("/api/invitations", invitationsRouter)
+app.use("/api/hierarchy", hierarchyRouter)
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
