@@ -132,6 +132,23 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
   return (
     <div style={{ fontFamily: ff, background: "transparent", padding: 0 }}>
+      <style>{`
+        .tier-row { display: flex; align-items: stretch; }
+        .tier-left { width: 120px; flex-shrink: 0; padding: 12px 14px; border-right: 0.5px solid #e8dcc8; display: flex; flex-direction: column; justify-content: center; }
+        .tier-mid { flex: 1; display: flex; align-items: stretch; }
+        .tier-right { width: 175px; flex-shrink: 0; padding: 14px 16px; border-left: 0.5px solid #e8dcc8; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 4px; }
+        .tier-stat { padding: 14px 8px; border-right: 0.5px solid #e8dcc8; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; flex: 1; }
+        .tier-stat:last-child { border-right: none; }
+        @media (max-width: 768px) {
+          .tier-row { flex-direction: column; }
+          .tier-left { width: 100%; padding: 14px 16px; border-right: none; border-bottom: 0.5px solid #e8dcc8; }
+          .tier-mid { flex-direction: column; }
+          .tier-stat { flex-direction: row; justify-content: space-between; padding: 10px 16px; border-right: none; border-bottom: 0.5px solid #e8dcc8; text-align: left; }
+          .tier-stat:last-child { border-bottom: none; }
+          .tier-right { width: 100%; padding: 14px 16px; border-left: none; border-top: 0.5px solid #e8dcc8; }
+          .tier-right button { width: 100% !important; }
+        }
+      `}</style>
 
       <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
         <div style={{ fontSize: "24px", fontWeight: "700", color: black, marginBottom: "4px", letterSpacing: "1px" }}>
@@ -144,9 +161,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
         {tiers.map((tier) => (
-          <div key={tier.id} style={{
-            display: "flex",
-            alignItems: "stretch",
+          <div key={tier.id} className="tier-row" style={{
             background: cardBg,
             border: `0.5px solid ${lightGold}`,
             borderTop: `3px solid ${gold}`,
@@ -171,15 +186,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             }}>{tier.chineseName}</div>
 
             {/* Left — tier name */}
-            <div style={{
-              width: "120px",
-              flexShrink: 0,
-              padding: "12px 14px",
-              borderRight: `0.5px solid #e8dcc8`,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}>
+            <div className="tier-left">
               <div style={{ fontSize: "11px", color: gold, letterSpacing: "2px", height: "16px", display: "flex", alignItems: "center", fontFamily: ff }}>
                 {tier.chineseName}
               </div>
@@ -194,24 +201,24 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             </div>
 
             {/* Mid — stats */}
-            <div style={{ flex: 1, display: "flex", alignItems: "stretch" }}>
-              <div style={cellStyle}>
+            <div className="tier-mid">
+              <div className="tier-stat">
                 <div style={slStyle}>Base credits</div>
                 <div style={svStyle}>{tier.baseCredits}</div>
               </div>
-              <div style={cellStyle}>
+              <div className="tier-stat">
                 <div style={slStyle}>FOC credits</div>
                 <div style={{ ...svStyle, color: gold }}>+{tier.focCredits}</div>
               </div>
-              <div style={cellStyle}>
+              <div className="tier-stat">
                 <div style={slStyle}>Replenishment</div>
                 <div style={svStyle}>SGD {tier.replenishmentPrice}</div>
               </div>
-              <div style={cellStyle}>
+              <div className="tier-stat">
                 <div style={slStyle}>Closing fee</div>
                 <div style={svStyle}>SGD {tier.closingFee}</div>
               </div>
-              <div style={{ ...cellStyle, borderRight: "none" }}>
+              <div className="tier-stat">
                 <div style={slStyle}>Upgrade fee</div>
                 <div style={svStyle}>
                   {tier.upgradeFee ? `SGD ${tier.upgradeFee}` : "—"}
