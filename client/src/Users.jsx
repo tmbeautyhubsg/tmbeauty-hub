@@ -79,11 +79,11 @@ function FormField({ label, children, required, note }) {
 
 function PhoneInput({ countryCode, phone, onCountryChange, onPhoneChange, placeholder }) {
   return (
-    <div style={{ display: "flex", gap: "8px" }}>
-      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "100px", flex: "none" }}>
+    <div style={{ display: "flex", gap: "8px", width: "100%", boxSizing: "border-box" }}>
+      <select value={countryCode} onChange={e => onCountryChange(e.target.value)} style={{ ...iStyle, width: "88px", minWidth: "88px", flex: "none" }}>
         {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.label}</option>)}
       </select>
-      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={iStyle} />
+      <input value={phone} onChange={e => onPhoneChange(e.target.value)} placeholder={placeholder || "XXXX XXXX"} style={{ ...iStyle, flex: 1, minWidth: 0 }} />
     </div>
   )
 }
@@ -112,7 +112,7 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
     : value || "—"
 
   return (
-    <div style={{ padding: "12px 16px", background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, borderRadius: "8px", transition: "all 0.15s" }}>
+    <div style={{ padding: "12px 16px", background: editing ? "#FFFBF0" : "#FFFDF7", border: `0.5px solid ${editing ? GOLD : GOLD_LIGHT}`, borderRadius: "8px", transition: "all 0.15s", overflow: "hidden", boxSizing: "border-box" }}>
       <p style={{ fontFamily: ff, fontSize: "11px", color: GOLD, letterSpacing: "1.5px", textTransform: "uppercase", fontWeight: "700", margin: "0 0 6px" }}>{label}</p>
       {editing ? (
         <div>
@@ -121,13 +121,13 @@ function EditableField({ label, value, fieldKey, type = "text", options, unlocke
               <PhoneInput countryCode={cc} phone={val} onCountryChange={setCc} onPhoneChange={setVal} />
             </div>
           ) : type === "select" && options ? (
-            <select value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px" }}>
+            <select value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px", width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
               {options.map(o => <option key={o.value || o} value={o.value || o}>{o.label || o}</option>)}
             </select>
           ) : (
-            <input value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px" }} />
+            <input value={val} onChange={e => setVal(e.target.value)} style={{ ...iStyle, marginBottom: "8px", width: "100%", boxSizing: "border-box" }} />
           )}
-          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px" }} />
+          <input value={note} onChange={e => { setNote(e.target.value); setErr("") }} placeholder="Reason for change (required)" style={{ ...iStyle, fontSize: "13px", marginBottom: "6px", width: "100%", boxSizing: "border-box" }} />
           {err && <p style={{ fontFamily: ff, fontSize: "12px", color: "#991B1B", margin: "0 0 6px" }}>{err}</p>}
           <div style={{ display: "flex", gap: "8px" }}>
             <button onClick={() => { setEditing(false); setVal(value || ""); setNote(""); setErr("") }} style={{ ...btnO, padding: "7px 14px", fontSize: "12px" }}>Cancel</button>

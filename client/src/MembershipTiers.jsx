@@ -217,7 +217,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
             <div style={{ fontSize: "18px", fontWeight: "700", color: black, marginBottom: "4px" }}>Edit Package</div>
             <div style={{ fontSize: "12px", color: muted, marginBottom: "20px" }}>{editingTier.chineseName} · {editingTier.englishName}</div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "12px", marginBottom: "12px" }}>
               {[
                 { label: "Chinese Name", key: "chinese_name", type: "text" },
                 { label: "English Name", key: "english_name", type: "text" },
@@ -231,7 +231,7 @@ export default function MembershipTiers({ isSuperAdmin = false }) {
                 <div key={key}>
                   <label style={lStyle}>{label}</label>
                   <input type={type} value={editForm[key] || ""} onChange={e => setEditForm({...editForm, [key]: e.target.value})}
-                    placeholder={type === "number" ? "0" : ""} style={iStyle} />
+                    placeholder={type === "number" ? "0" : ""} style={{ ...iStyle, width: "100%", boxSizing: "border-box" }} />
                 </div>
               ))}
               <div style={{ gridColumn: "1 / -1" }}>
