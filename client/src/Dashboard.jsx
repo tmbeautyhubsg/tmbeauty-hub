@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import logo from "./logo.png"
+import MembershipTiers from "./MembershipTiers"
 
 const GOLD = "#A87C2A"
 const GOLD_LIGHT = "#D4B86A"
@@ -369,10 +370,10 @@ export default function Dashboard({ user, onLogout }) {
   }
 
   const navItems = [
-    "Dashboard", "Hierarchy", "Inventory",
-    "Packages", "Commission", "Billing", "Users",
-    ...(user.role === "superadmin" ? ["Account Switcher"] : [])
-  ]
+  "Dashboard", "Hierarchy", "Inventory",
+  "Packages", "Membership Tiers", "Commission", "Billing", "Users",
+  ...(user.role === "superadmin" ? ["Account Switcher"] : [])
+]
 
   return (
     <div style={{ minHeight: "100vh", background: CREAM, display: "flex" }}>
@@ -417,13 +418,14 @@ export default function Dashboard({ user, onLogout }) {
       {/* Main content */}
       <div style={{ flex: 1, padding: "48px 56px", marginTop: isImpersonating ? "48px" : 0, overflowY: "auto" }}>
         {activePage === "Dashboard" && <DashboardHome user={user} />}
-        {activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
-        {!["Dashboard", "Account Switcher"].includes(activePage) && (
-          <div>
-            <PageHeader sub="Module" title={activePage} />
-            <ComingSoon label={activePage} />
-          </div>
-        )}
+{activePage === "Account Switcher" && <AccountSwitcher currentUser={user} />}
+{activePage === "Membership Tiers" && <MembershipTiers isSuperAdmin={user.role === "superadmin"} />}
+{!["Dashboard", "Account Switcher", "Membership Tiers"].includes(activePage) && (
+  <div>
+    <PageHeader sub="Module" title={activePage} />
+    <ComingSoon label={activePage} />
+  </div>
+)}
       </div>
 
     </div>
